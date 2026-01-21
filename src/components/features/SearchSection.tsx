@@ -11,33 +11,24 @@ import { toast } from "sonner";
 export default function SearchSection() {
   const router = useRouter();
   const [input, setInput] = useState("");
-  const { isLoading, setLoading, setSearchQuery } = useAppStore();
+  const { isLoading, setSearchQuery } = useAppStore();
 
   const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!input.trim()) {
-      toast.error("상품 URL이나 이름을 입력해주세요.");
+      toast.error("검색할 상품명을 입력해주세요.");
       return;
     }
 
-    setLoading(true);
-    // TODO: Implement actual search API call
-    // For MVP, we'll just simulate a delay and redirect to a mock product page
-
-    try {
-      setSearchQuery(input);
-      // Simulate API delay
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-
-      // Navigate to comparison page (mock ID for now)
-      // In real implementation, this would be the ID returned from the search API
-      router.push(`/compare/mock-product-id?q=${encodeURIComponent(input)}`);
-    } catch (error) {
-      toast.error("검색 중 오류가 발생했습니다.");
-    } finally {
-      setLoading(false);
+    if (input.trim().length < 2) {
+      toast.error("검색어는 2글자 이상 입력해주세요.");
+      return;
     }
+
+    setSearchQuery(input);
+    // Navigate to search results page
+    router.push(`/search?q=${encodeURIComponent(input.trim())}`);
   };
 
   return (
@@ -47,7 +38,7 @@ export default function SearchSection() {
           결정 피로, <span className="text-primary">그만.</span>
         </h1>
         <p className="text-xl text-muted-foreground">
-          링크 하나만 넣으세요. 쿠폰, 적립금까지 다 계산해서
+          상품명만 검색하세요. 쿠폰, 적립금까지 다 계산해서
           <br className="hidden sm:inline" />내 계정 기준 진짜 최저가를
           찾아드립니다.
         </p>
@@ -59,7 +50,7 @@ export default function SearchSection() {
           className="flex flex-col sm:flex-row gap-4"
         >
           <Input
-            placeholder="상품 URL 붙여넣기 또는 상품명 검색 (예: 쿠팡 링크)"
+            placeholder="검색할 상품명을 입력하세요 (예: 신라면, 에어팟)"
             className="flex-1 h-12 text-lg"
             value={input}
             onChange={(e) => setInput(e.target.value)}
