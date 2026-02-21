@@ -1,0 +1,64 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["driverAdapters"]
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model Product {
+  id        String   @id @default(uuid())
+  name      String
+  imageUrl  String?  @map("image_url")
+  category  String?
+  createdAt DateTime @default(now()) @map("created_at")
+
+  mallPrices MallPrice[]
+
+  @@map("products")
+  @@index([name])
+}
+
+model MallPrice {
+  id          String   @id @default(uuid())
+  productId   String   @map("product_id")
+  mallName    String   @map("mall_name")
+  basePrice   Int      @map("base_price")
+  shippingFee Int      @default(0) @map("shipping_fee")
+  productUrl  String   @map("product_url")
+  fetchedAt   DateTime @default(now()) @map("fetched_at")
+
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@map("mall_prices")
+  @@index([productId])
+}
+
+model DiscountRule {
+  id            String   @id @default(uuid())
+  mallName      String   @map("mall_name")
+  ruleType      String   @map("rule_type") // coupon, point, membership
+  ruleName      String   @map("rule_name")
+  discountType  String   @map("discount_type") // percent, fixed
+  discountValue Int      @map("discount_value")
+  maxDiscount   Int?     @map("max_discount")
+  conditions    String?
+  createdAt     DateTime @default(now()) @map("created_at")
+
+  @@map("discount_rules")
+  @@index([mallName])
+}
+
+model SearchLog {
+  id          String   @id @default(uuid())
+  sessionId   String?  @map("session_id")
+  productName String   @map("product_name")
+  searchedAt  DateTime @default(now()) @map("searched_at")
+
+  @@map("search_logs")
+}
