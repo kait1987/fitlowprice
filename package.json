@@ -8,7 +8,8 @@
     "dev:python": "cd scraper_engine && .\\venv\\Scripts\\python.exe -m uvicorn main:app --reload --port 8000",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "git-push": "git add . && git commit -m \"sync: update from local\" && git push origin main"
   },
   "dependencies": {
     "@prisma/client": "^5.22.0",
