@@ -56,12 +56,17 @@ export const ElevenStScraper: MallScraper = {
         const pythonResults = await searchElevenstPython(keyword);
         const mappedResults = mapPythonResultsToSearchItems(pythonResults);
         if (mappedResults.length > 0) {
-          console.log(`Python scraper returned ${mappedResults.length} results`);
+          console.log(
+            `Python scraper returned ${mappedResults.length} results`,
+          );
           return mappedResults;
         }
       }
     } catch (error) {
-      console.warn("Python scraper failed, falling back to direct fetch:", error);
+      console.warn(
+        "Python scraper failed, falling back to direct fetch:",
+        error,
+      );
     }
 
     // 2. 기존 방식 (fetch + HTML 파싱)
@@ -82,25 +87,13 @@ export const ElevenStScraper: MallScraper = {
 
       if (!response.ok) {
         console.error(`11st search failed: ${response.status}`);
-        if (process.env.NODE_ENV === "development") {
-          return getMock11stResults(keyword);
-        }
         return [];
       }
 
       const html = await response.text();
-      const results = parse11stSearchResults(html);
-
-      if (results.length === 0 && process.env.NODE_ENV === "development") {
-        return getMock11stResults(keyword);
-      }
-
-      return results;
+      return parse11stSearchResults(html);
     } catch (error) {
       console.error("11st search error:", error);
-      if (process.env.NODE_ENV === "development") {
-        return getMock11stResults(keyword);
-      }
       return [];
     }
   },
@@ -273,42 +266,4 @@ function mapPythonResultsToSearchItems(
     shippingFee: item.shippingFee,
     isFreeShipping: item.shippingFee === 0,
   }));
-}
-
-/**
- * 개발 환경용 Mock 데이터 생성 함수
- * 11번가 크롤링이 차단될 경우 테스트용 데이터를 반환합니다.
- */
-function getMock11stResults(keyword: string): SearchResultItem[] {
-  return [
-    {
-      productName: `[11번가] ${keyword} 특가 상품 1`,
-      price: 26500,
-      originalPrice: 32000,
-      imageUrl: "https://placehold.co/300x300/E91E63/FFFFFF?text=11st",
-      productUrl: `https://search.11st.co.kr/Search.tmall?kwd=${encodeURIComponent(keyword)}`,
-      mallName: "elevenst",
-      isFreeShipping: true,
-      reviewCount: 234,
-    },
-    {
-      productName: `[11번가] ${keyword} 할인 상품 2`,
-      price: 31000,
-      imageUrl: "https://placehold.co/300x300/E91E63/FFFFFF?text=11st",
-      productUrl: `https://search.11st.co.kr/Search.tmall?kwd=${encodeURIComponent(keyword)}`,
-      mallName: "elevenst",
-      isFreeShipping: false,
-      reviewCount: 156,
-    },
-    {
-      productName: `[11번가] ${keyword} 인기 상품 3`,
-      price: 39900,
-      originalPrice: 49900,
-      imageUrl: "https://placehold.co/300x300/E91E63/FFFFFF?text=11st",
-      productUrl: `https://search.11st.co.kr/Search.tmall?kwd=${encodeURIComponent(keyword)}`,
-      mallName: "elevenst",
-      isFreeShipping: true,
-      reviewCount: 789,
-    },
-  ];
 }

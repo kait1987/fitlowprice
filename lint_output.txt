@@ -1,0 +1,8 @@
+
+C:\anti_coding\fitlowprice\src\components\features\PriceCard.tsx
+  16:24  error  'ShoppingBag' is defined but never used          @typescript-eslint/no-unused-vars
+  17:8   error  'Image' is defined but never used                @typescript-eslint/no-unused-vars
+  26:7   error  'MALL_LOGOS' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+??3 problems (3 errors, 0 warnings)
+

@@ -37,6 +37,12 @@ class DriverManager:
         # Headless 모드
         if config.HEADLESS:
             options.add_argument("--headless=new")
+            options.add_argument("--disable-gpu")
+
+        # 윈도우 환경 크래시 방지 필수 옵션
+        options.add_argument("--no-sandbox")
+        options.add_argument("--disable-dev-shm-usage")
+        options.add_argument("--remote-debugging-port=9222")
 
         # 전용 프로필 경로 생성
         profile_path = Path(config.CHROME_PROFILE_PATH).resolve()

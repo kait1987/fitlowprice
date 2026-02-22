@@ -62,12 +62,17 @@ export const CoupangScraper: MallScraper = {
         const pythonResults = await searchCoupangPython(keyword);
         const mappedResults = mapPythonResultsToSearchItems(pythonResults);
         if (mappedResults.length > 0) {
-          console.log(`Python scraper returned ${mappedResults.length} results`);
+          console.log(
+            `Python scraper returned ${mappedResults.length} results`,
+          );
           return mappedResults;
         }
       }
     } catch (error) {
-      console.warn("Python scraper failed, falling back to direct fetch:", error);
+      console.warn(
+        "Python scraper failed, falling back to direct fetch:",
+        error,
+      );
     }
 
     // 2. 기존 방식 (fetch + HTML 파싱)
@@ -88,25 +93,13 @@ export const CoupangScraper: MallScraper = {
 
       if (!response.ok) {
         console.error(`Coupang search failed: ${response.status}`);
-        if (process.env.NODE_ENV === "development") {
-          return getMockCoupangResults(keyword);
-        }
         return [];
       }
 
       const html = await response.text();
-      const results = parseCoupangSearchResults(html);
-
-      if (results.length === 0 && process.env.NODE_ENV === "development") {
-        return getMockCoupangResults(keyword);
-      }
-
-      return results;
+      return parseCoupangSearchResults(html);
     } catch (error) {
       console.error("Coupang search error:", error);
-      if (process.env.NODE_ENV === "development") {
-        return getMockCoupangResults(keyword);
-      }
       return [];
     }
   },
@@ -233,48 +226,4 @@ function mapPythonResultsToSearchItems(
     shippingFee: item.shippingFee,
     isFreeShipping: item.shippingFee === 0,
   }));
-}
-
-/**
- * 개발 환경용 Mock 데이터 생성 함수
- * 쿠팡 크롤링이 차단될 경우 테스트용 데이터를 반환합니다.
- */
-function getMockCoupangResults(keyword: string): SearchResultItem[] {
-  return [
-    {
-      productName: `[쿠팡] ${keyword} 추천 상품 1`,
-      price: 29900,
-      originalPrice: 39900,
-      imageUrl: "https://placehold.co/300x300/FF6600/FFFFFF?text=Coupang",
-      productUrl: `https://www.coupang.com/np/search?q=${encodeURIComponent(keyword)}`,
-      mallName: "coupang",
-      isRocketDelivery: true,
-      isFreeShipping: true,
-      rating: 4.8,
-      reviewCount: 1523,
-    },
-    {
-      productName: `[쿠팡] ${keyword} 인기 상품 2`,
-      price: 35000,
-      originalPrice: 45000,
-      imageUrl: "https://placehold.co/300x300/FF6600/FFFFFF?text=Coupang",
-      productUrl: `https://www.coupang.com/np/search?q=${encodeURIComponent(keyword)}`,
-      mallName: "coupang",
-      isRocketDelivery: true,
-      isFreeShipping: true,
-      rating: 4.5,
-      reviewCount: 892,
-    },
-    {
-      productName: `[쿠팡] ${keyword} 베스트 상품 3`,
-      price: 42500,
-      imageUrl: "https://placehold.co/300x300/FF6600/FFFFFF?text=Coupang",
-      productUrl: `https://www.coupang.com/np/search?q=${encodeURIComponent(keyword)}`,
-      mallName: "coupang",
-      isRocketDelivery: false,
-      isFreeShipping: false,
-      rating: 4.3,
-      reviewCount: 456,
-    },
-  ];
 }

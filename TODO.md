@@ -3,7 +3,7 @@
 > **프로젝트**: FitLowPrice - 결정 피로 제거 서비스  
 > **버전**: MVP 1.0  
 > **예상 기간**: 4주  
-> **최종 수정**: 2026-02-21
+> **최종 수정**: 2026-01-20
 
 ---
 
@@ -11,9 +11,6 @@
 
 이 문서는 FitLowPrice MVP 개발을 위한 상세 태스크 체크리스트입니다.
 PRD 기반으로 작성되었으며, Claude Code 에이전트와 협업 시 참조됩니다.
-
-**목표**: 네이버, 쿠팡, 11번가 로그인 정보를 기반으로 나의 포인트, 쿠폰, 멤버십 혜택이 모두 적용된 **'진짜 최종 결제 금액'**을 한눈에 비교하는 도구 제작.
-**핵심 가치**: 일반 최저가가 아닌 **'나에게만 해당하는 최저가'** 확인 및 쇼핑 시간 단축.
 
 ### 진행 상태 범례
 
@@ -152,22 +149,23 @@ PRD 기반으로 작성되었으며, Claude Code 에이전트와 협업 시 참�
 
 ---
 
-## ⚙️ Phase 3: 백엔드 개발 및 수집 모듈 (Week 3)
+## ⚙️ Phase 3: 백엔드 개발 (Week 3)
 
-### 3.1 가격 수집 모듈 (Python 브라우저 세션 공유 방식)
+### 3.1 가격 수집 모듈
 
-- [ ] 구현을 위한 파이썬(Python) 등 기초 환경 세팅 가이드 작성
 - [/] 쿠팡 가격 수집
   - [ ] URL에서 상품 ID 추출
-  - [ ] 보안 차단 우회를 위한 로그인 세션 공유 스크래핑 (Selenium 등)
-  - [ ] 와우 회원 전용가, 카드사 즉시 할인, 쿠페이 머니 적립 파싱
-  - [x] 기본 상품 정보 및 배송비 파싱 (Mock)
+  - [x] 상품 정보 파싱 (이름, 가격, 이미지) (Mock)
+  - [x] 배송비 정보 파싱 (Mock)
+  - [ ] 에러 핸들링 (rate limit, 차단)
 - [/] 네이버 가격 수집
-  - [ ] 네이버 쇼핑 검색 및 세션 공유 스크래핑
-  - [ ] 네이버 플러스 멤버십 적립률, 보유 포인트, 스토어별 쿠폰 파싱
+  - [ ] 네이버 쇼핑 검색 API 활용
+  - [ ] 상품 매칭 로직
+  - [x] 가격 정보 추출 (Mock)
 - [/] 11번가 가격 수집
-  - [ ] URL에서 상품 ID 추출 및 세션 공유 스크래핑
-  - [ ] T멤버십 할인/적립, 우주패스 혜택, SK pay 포인트, 장바구니 쿠폰 파싱
+  - [ ] URL에서 상품 ID 추출
+  - [x] 상품 정보 파싱 (Mock)
+  - [x] 가격 정보 추출 (Mock)
 - [ ] 수집 결과 캐싱 (1시간 TTL)
 
 ### 3.2 상품 검색 API
@@ -177,19 +175,65 @@ PRD 기반으로 작성되었으며, Claude Code 에이전트와 협업 시 참�
   - [x] 상품 정보 수집 (Mock)
   - [x] 타 쇼핑몰 동일 상품 매칭 (Mock)
   - [x] 응답 포맷 정의
+    ```json
+    {
+      "product": { "id", "name", "image" },
+      "prices": [
+        { "mall", "basePrice", "shippingFee", "url" }
+      ]
+    }
+    ```
 
 ### 3.3 가격 계산 API
 
 - [x] `POST /api/calculate` 구현
   - [x] 요청 파라미터 정의
+    ```json
+    {
+      "productId": "string",
+      "discounts": [
+        { "mall": "coupang", "rules": ["wow_member", "first_purchase"] }
+      ]
+    }
+    ```
   - [x] 할인 규칙 적용 로직
+    - [x] 퍼센트 할인 계산
+    - [x] 정액 할인 계산
+    - [x] 최대 할인 한도 적용
+    - [x] 복수 할인 중첩 처리
   - [x] 최종가 계산 및 정렬
   - [ ] 응답 포맷 정의
+    ```json
+    {
+      "results": [
+        {
+          "mall": "naver",
+          "finalPrice": 323000,
+          "savings": 5000,
+          "breakdown": { ... }
+        }
+      ],
+      "cheapest": "naver"
+    }
+    ```
 
 ### 3.4 할인 규칙 API
 
 - [ ] `GET /api/malls` - 쇼핑몰 목록 반환
 - [ ] `GET /api/malls/[id]/discounts` - 할인 규칙 반환
+- [ ] 할인 규칙 데이터 구조
+  ```typescript
+  interface DiscountRule {
+    id: string;
+    mallName: string;
+    ruleType: "coupon" | "point" | "membership";
+    ruleName: string;
+    discountType: "percent" | "fixed";
+    discountValue: number;
+    maxDiscount?: number;
+    conditions?: string;
+  }
+  ```
 
 ### 3.5 에러 핸들링 & 로깅
 
@@ -204,9 +248,17 @@ PRD 기반으로 작성되었으며, Claude Code 에이전트와 협업 시 참�
 ### 4.1 테스트
 
 - [ ] 단위 테스트
+  - [ ] 가격 계산 로직 테스트
+  - [ ] URL 파싱 테스트
+  - [ ] 할인 규칙 적용 테스트
 - [ ] 통합 테스트
+  - [ ] API 엔드포인트 테스트
+  - [ ] 가격 수집 → 계산 플로우 테스트
 - [ ] E2E 테스트 (선택적)
+  - [ ] 전체 사용자 플로우 테스트
 - [ ] 수동 테스트
+  - [ ] 실제 쇼핑몰 URL로 테스트
+  - [ ] 다양한 상품 테스트 (가전, 의류, 식품 등)
 
 ### 4.2 성능 최적화
 
@@ -219,6 +271,9 @@ PRD 기반으로 작성되었으며, Claude Code 에이전트와 협업 시 참�
 
 - [ ] Vercel 프로젝트 연결
 - [ ] 환경 변수 설정
+  - [ ] `SUPABASE_URL`
+  - [ ] `SUPABASE_ANON_KEY`
+  - [ ] 기타 API 키 (필요시)
 - [ ] 도메인 설정 (선택적)
 - [ ] 프로덕션 배포
 - [ ] 배포 후 스모크 테스트
@@ -227,6 +282,9 @@ PRD 기반으로 작성되었으며, Claude Code 에이전트와 협업 시 참�
 
 - [ ] 테스트 사용자 5~10명 모집
 - [ ] 테스트 시나리오 작성
+  1. 쿠팡 URL 입력 → 가격 비교
+  2. 쿠폰 선택 → 최종가 확인
+  3. 최저가 쇼핑몰로 이동
 - [ ] 피드백 수집
 - [ ] 주요 이슈 수정
 
@@ -260,16 +318,61 @@ PRD 기반으로 작성되었으며, Claude Code 에이전트와 협업 시 참�
 
 ---
 
+## 📁 프로젝트 구조 (예상)
+
+```
+fitlowprice/
+├── .claude/
+│   └── CLAUDE.md          # Claude 에이전트 컨텍스트
+├── src/
+│   ├── app/
+│   │   ├── page.tsx       # 메인 페이지
+│   │   ├── compare/
+│   │   │   └── [productId]/
+│   │   │       └── page.tsx
+│   │   └── api/
+│   │       ├── products/
+│   │       │   └── search/
+│   │       │       └── route.ts
+│   │       ├── calculate/
+│   │       │   └── route.ts
+│   │       └── malls/
+│   │           └── route.ts
+│   ├── components/
+│   │   ├── ui/            # 기본 UI 컴포넌트
+│   │   ├── layout/        # 레이아웃 컴포넌트
+│   │   └── features/      # 기능별 컴포넌트
+│   ├── lib/
+│   │   ├── supabase.ts    # Supabase 클라이언트
+│   │   ├── scrapers/      # 가격 수집 모듈
+│   │   │   ├── coupang.ts
+│   │   │   ├── naver.ts
+│   │   │   └── elevenst.ts
+│   │   └── calculator.ts  # 가격 계산 로직
+│   ├── types/
+│   │   └── index.ts       # 타입 정의
+│   └── store/
+│       └── index.ts       # 상태 관리
+├── public/
+│   └── images/
+│       └── malls/         # 쇼핑몰 로고
+├── package.json
+├── tsconfig.json
+├── 개발TODO.md            # 이 파일
+└── README.md
+```
+
+---
+
 ## 📝 참고 문서
 
-- [CLAUDE.md](./CLAUDE.md) - 프로젝트 컨텍스트
-- [PRD_FitLowPrice.md](file:///C:/Users/wntjd/.gemini/antigravity/brain/fb97589e-72c7-48a6-9888-8c3197b4b4d6/PRD_FitLowPrice.md) - 제품 요구사항 문서
+- [PRD.md](./PRD.md) - 제품 요구사항 문서
+- [Claude Code Memory Best Practices](https://docs.anthropic.com/en/docs/claude-code/memory) - CLAUDE.md 작성 가이드
 
 ---
 
 ## 변경 이력
 
-|    날짜    | 변경 내용                                           |
-| :--------: | --------------------------------------------------- |
-| 2026-01-20 | 초안 작성                                           |
-| 2026-02-21 | 1차 정리 요구사항 반영 및 Python 수집 방식 업데이트 |
+|    날짜    | 변경 내용 |
+| :--------: | --------- |
+| 2026-01-20 | 초안 작성 |

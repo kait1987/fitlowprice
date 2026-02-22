@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, Suspense } from "react";
+import { useEffect, useState, Suspense, use } from "react";
 import { useSearchParams } from "next/navigation";
 import { PriceCard } from "@/components/features/PriceCard";
 import { DiscountRule, MallPrice, SearchResponse } from "@/types";
@@ -96,11 +96,7 @@ const MOCK_DATA: Record<string, SearchResponse & { rules: DiscountRule[] }> = {
   },
 };
 
-function ComparePageContent({
-  productId,
-}: {
-  productId: string;
-}) {
+function ComparePageContent({ productId }: { productId: string }) {
   const searchParams = useSearchParams();
   const query = searchParams.get("q");
 
@@ -238,24 +234,26 @@ function ComparePageContent({
 export default function ComparePage({
   params,
 }: {
-  params: { productId: string };
+  params: Promise<{ productId: string }>;
 }) {
-  const { productId } = params;
+  const { productId } = use(params);
 
   return (
-    <Suspense fallback={
-      <div className="container py-12 space-y-8 max-w-5xl">
-        <div className="space-y-4">
-          <Skeleton className="h-8 w-2/3 max-w-md" />
-          <Skeleton className="h-4 w-1/3" />
+    <Suspense
+      fallback={
+        <div className="container py-12 space-y-8 max-w-5xl">
+          <div className="space-y-4">
+            <Skeleton className="h-8 w-2/3 max-w-md" />
+            <Skeleton className="h-4 w-1/3" />
+          </div>
+          <div className="grid md:grid-cols-3 gap-6">
+            {[1, 2, 3].map((i) => (
+              <Skeleton key={i} className="h-[400px] rounded-xl" />
+            ))}
+          </div>
         </div>
-        <div className="grid md:grid-cols-3 gap-6">
-          {[1, 2, 3].map((i) => (
-            <Skeleton key={i} className="h-[400px] rounded-xl" />
-          ))}
-        </div>
-      </div>
-    }>
+      }
+    >
       <ComparePageContent productId={productId} />
     </Suspense>
   );

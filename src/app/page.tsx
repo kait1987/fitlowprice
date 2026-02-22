@@ -2,7 +2,7 @@ import SearchSection from "@/components/features/SearchSection";
 
 export default function Home() {
   return (
-    <div className="container flex flex-col items-center justify-center min-h-[calc(100vh-140px)] py-12 gap-12">
+    <div className="container mx-auto px-4 flex flex-col items-center justify-center min-h-[calc(100vh-140px)] py-12 gap-12">
       <SearchSection />
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full max-w-5xl">

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, Suspense } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
@@ -118,7 +118,7 @@ function SearchResultsContent() {
   const sortedResults = getAllResults();
 
   return (
-    <div className="container py-8 max-w-6xl">
+    <div className="container mx-auto px-4 py-8 max-w-6xl">
       {/* Header */}
       <div className="flex flex-col gap-6 mb-8">
         <Button
@@ -354,20 +354,26 @@ function SearchResultsContent() {
 
 export default function SearchResultsPage() {
   return (
-    <Suspense fallback={
-      <div className="container py-8 max-w-6xl">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {[1, 2, 3, 4, 5, 6].map((i) => (
-            <div key={i} className="rounded-xl border p-4 space-y-4">
-              <Skeleton className="h-48 w-full rounded-lg" />
-              <Skeleton className="h-4 w-full" />
-              <Skeleton className="h-4 w-2/3" />
-              <Skeleton className="h-8 w-1/2" />
-            </div>
-          ))}
+    <Suspense
+      fallback={
+        <div className="container mx-auto px-4 py-8 max-w-6xl">
+          <div className="flex flex-col gap-6 mb-8">
+            <Skeleton className="h-10 w-24" />
+            <Skeleton className="h-12 w-full" />
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {[1, 2, 3, 4, 5, 6].map((i) => (
+              <div key={i} className="rounded-xl border p-4 space-y-4">
+                <Skeleton className="h-48 w-full rounded-lg" />
+                <Skeleton className="h-4 w-full" />
+                <Skeleton className="h-4 w-2/3" />
+                <Skeleton className="h-8 w-1/2" />
+              </div>
+            ))}
+          </div>
         </div>
-      </div>
-    }>
+      }
+    >
       <SearchResultsContent />
     </Suspense>
   );

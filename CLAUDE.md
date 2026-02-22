@@ -182,6 +182,14 @@ return NextResponse.json(
 | `naver`    | 네이버쇼핑 | 네이버 플러스 멤버십 적립률, 보유 포인트, 스토어별 쿠폰        |
 | `elevenst` | 11번가     | T멤버십 할인/적립, 우주패스 혜택, SK pay 포인트, 장바구니 쿠폰 |
 
+### 데이터 수집 전략 (API vs Scraping)
+
+| 쇼핑몰 | 권장 방법 | 필요 조건 | 비고 |
+|--------|----------|----------|-----|
+| **네이버** | [공식 검색 API](https://developers.naver.com/) | Client ID/Secret | **구현 완료**. 가장 안정적이고 빠름. |
+| **쿠팡** | [쿠팡 파트너스 API](https://partners.coupang.com/) | 파트너스 가입 | **추천**. 셀러 등록 불필요. 개인 가입 가능. |
+| **11번가** | [11번가 OpenAPI](https://openapi.11st.co.kr/) | 개발자(셀러) 등록 | 구매자 ID로 승인 어려움. 셀러 권장. 대안으로 Puppeteer 고려. |
+
 ---
 
 ## 가격 계산 로직

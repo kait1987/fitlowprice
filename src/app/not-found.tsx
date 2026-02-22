@@ -4,7 +4,7 @@ import { Home } from "lucide-react";
 
 export default function NotFound() {
   return (
-    <div className="container flex flex-col items-center justify-center min-h-[calc(100vh-140px)] py-12 gap-6 text-center">
+    <div className="container mx-auto px-4 flex flex-col items-center justify-center min-h-[calc(100vh-140px)] py-12 gap-6 text-center">
       <div className="space-y-2">
         <h1 className="text-6xl font-bold text-muted-foreground">404</h1>
         <h2 className="text-2xl font-semibold">페이지를 찾을 수 없습니다</h2>

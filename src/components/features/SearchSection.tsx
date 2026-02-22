@@ -47,11 +47,11 @@ export default function SearchSection() {
       <div className="p-6 bg-card rounded-xl border shadow-sm">
         <form
           onSubmit={handleSearch}
-          className="flex flex-col sm:flex-row gap-4"
+          className="flex flex-col sm:flex-row gap-4 max-w-2xl mx-auto"
         >
           <Input
             placeholder="검색할 상품명을 입력하세요 (예: 신라면, 에어팟)"
-            className="flex-1 h-12 text-lg"
+            className="flex-1 h-12 text-lg text-center"
             value={input}
             onChange={(e) => setInput(e.target.value)}
             disabled={isLoading}
@@ -70,9 +70,9 @@ export default function SearchSection() {
             최저가 찾기
           </Button>
         </form>
-        <div className="mt-4 flex flex-wrap justify-center gap-2 text-sm text-muted-foreground">
+        <div className="mt-4 flex flex-wrap justify-center items-center gap-2 text-sm text-muted-foreground w-full">
           <span>지원 쇼핑몰:</span>
-          <span className="font-medium text-foreground">쿠팡</span>
+          <span className="font-medium text-foreground">쿠팡(지원할예정)</span>
           <span className="text-muted-foreground/40">•</span>
           <span className="font-medium text-foreground">네이버</span>
           <span className="text-muted-foreground/40">•</span>

@@ -1,0 +1,3775 @@
+This file is a merged representation of the entire codebase, combined into a single document by Repomix.
+
+<file_summary>
+This section contains a summary of this file.
+
+<purpose>
+This file contains a packed representation of the entire repository's contents.
+It is designed to be easily consumable by AI systems for analysis, code review,
+or other automated processes.
+</purpose>
+
+<file_format>
+The content is organized as follows:
+1. This summary section
+2. Repository information
+3. Directory structure
+4. Repository files (if enabled)
+5. Multiple file entries, each consisting of:
+  - File path as an attribute
+  - Full contents of the file
+</file_format>
+
+<usage_guidelines>
+- This file should be treated as read-only. Any changes should be made to the
+  original repository files, not this packed version.
+- When processing this file, use the file path to distinguish
+  between different files in the repository.
+- Be aware that this file may contain sensitive information. Handle it with
+  the same level of security as you would the original repository.
+</usage_guidelines>
+
+<notes>
+- Some files may have been excluded based on .gitignore rules and Repomix's configuration
+- Binary files are not included in this packed representation. Please refer to the Repository Structure section for a complete list of file paths, including binary files
+- Files matching patterns in .gitignore are excluded
+- Files matching default ignore patterns are excluded
+- Files are sorted by Git change count (files with more changes are at the bottom)
+</notes>
+
+</file_summary>
+
+<directory_structure>
+.gitignore
+CLAUDE.md
+components.json
+eslint.config.mjs
+netlify.toml
+next.config.ts
+package.json
+postcss.config.mjs
+prisma/schema.prisma
+public/file.svg
+public/globe.svg
+public/next.svg
+public/vercel.svg
+public/window.svg
+README.md
+src/app/api/calculate/route.ts
+src/app/api/products/search/route.ts
+src/app/compare/[productId]/page.tsx
+src/app/favicon.ico
+src/app/globals.css
+src/app/layout.tsx
+src/app/not-found.tsx
+src/app/page.tsx
+src/app/search/page.tsx
+src/components/features/PriceCard.tsx
+src/components/features/SearchSection.tsx
+src/components/layout/Footer.tsx
+src/components/layout/Header.tsx
+src/components/ui/badge.tsx
+src/components/ui/button.tsx
+src/components/ui/card.tsx
+src/components/ui/checkbox.tsx
+src/components/ui/input.tsx
+src/components/ui/label.tsx
+src/components/ui/skeleton.tsx
+src/components/ui/sonner.tsx
+src/lib/prisma.ts
+src/lib/scrapers/coupang.ts
+src/lib/scrapers/elevenst.ts
+src/lib/scrapers/naver.ts
+src/lib/scrapers/types.ts
+src/lib/utils.ts
+src/store/index.ts
+src/types/index.ts
+TODO.md
+tsconfig.json
+</directory_structure>
+
+<files>
+This section contains the contents of the repository's files.
+
+<file path="CLAUDE.md">
+# FitLowPrice - 프로젝트 컨텍스트
+
+> 이 파일은 Claude Code 에이전트가 프로젝트를 이해하기 위한 컨텍스트 문서입니다.
+>
+> **참고 리소스**:
+>
+> - [SkillsCokac](https://skills.cokac.com/) - Claude Code Skills 커뮤니티
+> - [SkillsMP](https://skillsmp.com/) - Agent Skills 마켓플레이스
+
+---
+
+## 프로젝트 개요
+
+**FitLowPrice**는 사용자가 쇼핑몰별 쿠폰/적립금을 고려한 **실제 최저가**를 한 눈에 비교할 수 있는 서비스입니다.
+
+### 핵심 가치
+
+- ❌ 단순 가격 비교 서비스가 아님
+- ⭕ **"결정 피로 제거 서비스"** - 사용자가 "손해 보지 않았다"는 확신을 얻는 것이 목표
+
+### 타겟 사용자
+
+- 29세 직장인, 여러 쇼핑몰 계정 보유
+- 쿠폰/적립금 관리가 귀찮음
+- "대충 싼 것 같은 곳"에서 구매하는 습관
+
+---
+
+## 기술 스택
+
+| 계층          | 기술                         |
+| ------------- | ---------------------------- |
+| **Framework** | Next.js 16 (App Router)      |
+| **Language**  | TypeScript (Strict Mode)     |
+| **Database**  | Turso (Cloud SQLite)         |
+| **Styling**   | Tailwind CSS + shadcn/ui     |
+| **State**     | Zustand (persist middleware) |
+| **Deploy**    | Netlify                      |
+
+---
+
+## 프로젝트 구조
+
+```
+fitlowprice/
+├── src/
+│   ├── app/                    # Next.js App Router
+│   │   ├── page.tsx            # 메인 페이지 (검색)
+│   │   ├── not-found.tsx       # 404 페이지
+│   │   ├── compare/[productId]/ # 가격 비교 페이지
+│   │   └── api/                # API Routes
+│   │       ├── products/search/ # 상품 검색
+│   │       └── calculate/       # 최종가 계산
+│   ├── components/
+│   │   ├── ui/                 # shadcn/ui 컴포넌트
+│   │   ├── layout/             # Header, Footer
+│   │   └── features/           # SearchSection, PriceCard
+│   ├── lib/
+│   │   ├── prisma.ts           # Prisma 클라이언트 (DB)
+│   │   ├── scrapers/           # 가격 수집 모듈 (Strategy Pattern)
+│   │   │   ├── types.ts        # MallScraper 인터페이스
+│   │   │   ├── coupang.ts
+│   │   │   ├── naver.ts
+│   │   │   └── elevenst.ts
+│   │   └── utils.ts            # cn() 등 유틸리티
+│   ├── types/                  # TypeScript 타입 정의
+│   └── store/                  # Zustand 스토어
+├── prisma/
+│   └── schema.prisma           # DB 스키마 정의
+├── netlify.toml                # Netlify 배포 설정
+├── public/images/malls/        # 쇼핑몰 로고
+├── next.config.ts              # Next.js 설정 (이미지 도메인 등)
+├── CLAUDE.md                   # 이 파일
+├── 개발TODO.md                 # 개발 태스크 체크리스트
+└── package.json
+```
+
+---
+
+## 주요 명령어
+
+```bash
+# 개발 서버 실행
+npm run dev
+
+# 빌드 (프로덕션)
+npm run build
+
+# 린트
+npm run lint
+
+# 타입 체크
+npx tsc --noEmit
+
+# shadcn/ui 컴포넌트 추가
+npx shadcn@latest add <component-name>
+
+# Prisma DB 스키마 적용 (로컬)
+npx prisma db push
+
+# DB 데이터 확인 (Prisma Studio)
+npx prisma studio
+```
+
+---
+
+## 코딩 컨벤션
+
+### 파일/폴더 명명
+
+- 컴포넌트: `PascalCase.tsx` (예: `PriceCard.tsx`)
+- 유틸/헬퍼: `kebab-case.ts` (예: `price-calculator.ts`)
+- API 라우트: `route.ts` (Next.js App Router 표준)
+
+### 코드 스타일
+
+```typescript
+// ✅ 컴포넌트는 named export 또는 default export 사용
+export function PriceCard({ mall, price }: PriceCardProps) {
+  // ...
+}
+
+// ✅ 인터페이스는 Props 접미사 사용
+interface PriceCardProps {
+  mall: MallID;
+  price: MallPrice;
+  isCheapest: boolean;
+}
+
+// ✅ API 응답 타입은 Response 접미사
+interface SearchResponse {
+  product: Product;
+  prices: MallPrice[];
+}
+
+// ✅ 서버 액션/API는 async 함수
+export async function POST(request: Request) {
+  // ...
+}
+
+// ✅ 미사용 변수는 _prefix 또는 eslint-disable 사용
+async search(_keyword: string): Promise<ScraperResult[]> {
+  return [];
+}
+```
+
+### 에러 처리
+
+```typescript
+// API에서 일관된 에러 응답 형식 사용
+return NextResponse.json(
+  { error: "상품을 찾을 수 없습니다.", code: "PRODUCT_NOT_FOUND" },
+  { status: 404 },
+);
+
+// catch 블록에서 미사용 error 변수는 생략
+} catch {
+  return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+}
+```
+
+---
+
+## 핵심 도메인 용어
+
+| 용어           | 설명                               |
+| -------------- | ---------------------------------- | ------- | ---------- |
+| `basePrice`    | 쇼핑몰 표시 판매가 (할인 전)       |
+| `shippingFee`  | 배송비                             |
+| `finalPrice`   | 모든 할인 적용 후 최종 결제 예상액 |
+| `discountRule` | 쿠폰, 적립금, 멤버십 등 할인 규칙  |
+| `mall`         | 쇼핑몰 (coupang, naver, elevenst)  |
+| `MallID`       | 타입: 'coupang'                    | 'naver' | 'elevenst' |
+
+---
+
+## 지원 쇼핑몰
+
+| Mall ID    | 이름       | 주요 할인 혜택            |
+| ---------- | ---------- | ------------------------- |
+| `coupang`  | 쿠팡       | 로켓와우, 첫 구매 쿠폰    |
+| `naver`    | 네이버쇼핑 | 네이버페이, 플러스 멤버십 |
+| `elevenst` | 11번가     | SK pay, 우주패스, 십일절  |
+
+---
+
+## 가격 계산 로직
+
+```typescript
+function calculateFinalPrice(
+  basePrice: number,
+  shippingFee: number,
+  discounts: AppliedDiscount[],
+): number {
+  let total = basePrice + shippingFee;
+
+  for (const discount of discounts) {
+    if (discount.type === "percent") {
+      const amount = Math.min(
+        total * (discount.value / 100),
+        discount.maxDiscount ?? Infinity,
+      );
+      total -= amount;
+    } else if (discount.type === "fixed") {
+      total -= discount.value;
+    }
+  }
+
+  return Math.max(total, 0);
+}
+```
+
+---
+
+## UX 원칙 (Nielsen's 10 Heuristics 기반)
+
+> 참고: [SkillsCokac - ux-improve](https://skills.cokac.com/)
+
+1. **가시성**: 현재 최저가 쇼핑몰이 명확히 표시됨 (🏆 뱃지)
+2. **일관성**: 모든 PriceCard가 동일한 구조
+3. **피드백**: 체크박스 선택 시 즉시 가격 재계산
+4. **에러 방지**: URL 유효성 검사로 잘못된 입력 방지
+5. **간결성**: 핵심 정보만 표시, 세부 정보는 접힘
+
+---
+
+## 주의사항
+
+### ❌ 하지 않는 것
+
+- 쇼핑몰 계정 자동 로그인/연동
+- 실제 결제 처리
+- 사용자 개인정보 수집
+
+### ⚠️ 주의할 것
+
+- 가격 수집 시 rate limiting 준수
+- 캐싱으로 불필요한 요청 최소화
+- 수집 실패 시 graceful degradation
+- 외부 이미지는 `next.config.ts`의 `remotePatterns`에 도메인 추가 필요
+
+---
+
+## 관련 문서
+
+- [개발TODO.md](./개발TODO.md) - 개발 태스크 체크리스트
+- [PRD_FitLowPrice.md](file:///C:/Users/wntjd/.gemini/antigravity/brain/fb97589e-72c7-48a6-9888-8c3197b4b4d6/PRD_FitLowPrice.md) - 제품 요구사항 문서
+- [walkthrough.md](file:///C:/Users/wntjd/.gemini/antigravity/brain/fb97589e-72c7-48a6-9888-8c3197b4b4d6/walkthrough.md) - MVP 구현 결과
+
+---
+
+## 현재 상태 (2026-01-21 업데이트)
+
+### 완료됨 ✅
+
+- [x] PRD 작성 완료
+- [x] 개발TODO.md 작성 완료
+- [x] CLAUDE.md 작성 완료
+- [x] 프로젝트 초기화 (Next.js 16 + TypeScript + Tailwind)
+- [x] shadcn/ui 컴포넌트 설치 (Button, Input, Card, Badge, Skeleton, Checkbox, Sonner)
+- [x] Zustand 상태 관리 설정
+- [x] 메인 페이지 (SearchSection) 구현
+- [x] 가격 비교 페이지 (PriceCard) 구현
+- [x] API 라우트 구현 (/products/search, /calculate)
+- [x] Scraper 인터페이스 및 Mock 구현
+- [x] 빌드 성공 (`npm run build` PASS)
+
+### 진행 중 🚧
+
+- [/] 실제 Scraper 로직 구현 (현재 Mock)
+- [x] Turso (Cloud SQLite) + Prisma 연결 설정 완료
+- [x] Netlify 배포 설정 완료 (netlify.toml)
+
+### 다음 단계 📋
+
+- [ ] Turso 계정 생성 및 DB 생성 (https://turso.tech)
+- [ ] 실제 쇼핑몰 크롤링 로직 구현
+- [ ] 검색 결과 캐싱 (Turso)
+- [ ] 최근 검색 기록 (로컬 스토리지)
+- [ ] Netlify 배포
+
+---
+
+## 빠른 시작
+
+```bash
+# 의존성 설치
+npm install
+
+# 개발 서버 실행
+npm run dev
+
+# http://localhost:3000 접속
+```
+
+### 테스트 시나리오
+
+1. 메인 페이지에서 아무 텍스트 입력 → 검색
+2. /compare 페이지에서 할인 체크박스 토글 → 가격 변동 확인
+3. "최저가" 쇼핑몰 확인 → 외부 링크 클릭
+</file>
+
+<file path="components.json">
+{
+  "$schema": "https://ui.shadcn.com/schema.json",
+  "style": "new-york",
+  "rsc": true,
+  "tsx": true,
+  "tailwind": {
+    "config": "",
+    "css": "src/app/globals.css",
+    "baseColor": "neutral",
+    "cssVariables": true,
+    "prefix": ""
+  },
+  "iconLibrary": "lucide",
+  "aliases": {
+    "components": "@/components",
+    "utils": "@/lib/utils",
+    "ui": "@/components/ui",
+    "lib": "@/lib",
+    "hooks": "@/hooks"
+  },
+  "registries": {}
+}
+</file>
+
+<file path="eslint.config.mjs">
+import { defineConfig, globalIgnores } from "eslint/config";
+import nextVitals from "eslint-config-next/core-web-vitals";
+import nextTs from "eslint-config-next/typescript";
+
+const eslintConfig = defineConfig([
+  ...nextVitals,
+  ...nextTs,
+  // Override default ignores of eslint-config-next.
+  globalIgnores([
+    // Default ignores of eslint-config-next:
+    ".next/**",
+    "out/**",
+    "build/**",
+    "next-env.d.ts",
+  ]),
+]);
+
+export default eslintConfig;
+</file>
+
+<file path="netlify.toml">
+[build]
+  command = "npm run build"
+  publish = ".next"
+
+[build.environment]
+  NODE_VERSION = "20"
+
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
+</file>
+
+<file path="postcss.config.mjs">
+const config = {
+  plugins: {
+    "@tailwindcss/postcss": {},
+  },
+};
+
+export default config;
+</file>
+
+<file path="prisma/schema.prisma">
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["driverAdapters"]
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model Product {
+  id        String   @id @default(uuid())
+  name      String
+  imageUrl  String?  @map("image_url")
+  category  String?
+  createdAt DateTime @default(now()) @map("created_at")
+
+  mallPrices MallPrice[]
+
+  @@map("products")
+  @@index([name])
+}
+
+model MallPrice {
+  id          String   @id @default(uuid())
+  productId   String   @map("product_id")
+  mallName    String   @map("mall_name")
+  basePrice   Int      @map("base_price")
+  shippingFee Int      @default(0) @map("shipping_fee")
+  productUrl  String   @map("product_url")
+  fetchedAt   DateTime @default(now()) @map("fetched_at")
+
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@map("mall_prices")
+  @@index([productId])
+}
+
+model DiscountRule {
+  id            String   @id @default(uuid())
+  mallName      String   @map("mall_name")
+  ruleType      String   @map("rule_type") // coupon, point, membership
+  ruleName      String   @map("rule_name")
+  discountType  String   @map("discount_type") // percent, fixed
+  discountValue Int      @map("discount_value")
+  maxDiscount   Int?     @map("max_discount")
+  conditions    String?
+  createdAt     DateTime @default(now()) @map("created_at")
+
+  @@map("discount_rules")
+  @@index([mallName])
+}
+
+model SearchLog {
+  id          String   @id @default(uuid())
+  sessionId   String?  @map("session_id")
+  productName String   @map("product_name")
+  searchedAt  DateTime @default(now()) @map("searched_at")
+
+  @@map("search_logs")
+}
+</file>
+
+<file path="public/file.svg">
+<svg fill="none" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><path d="M14.5 13.5V5.41a1 1 0 0 0-.3-.7L9.8.29A1 1 0 0 0 9.08 0H1.5v13.5A2.5 2.5 0 0 0 4 16h8a2.5 2.5 0 0 0 2.5-2.5m-1.5 0v-7H8v-5H3v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1M9.5 5V2.12L12.38 5zM5.13 5h-.62v1.25h2.12V5zm-.62 3h7.12v1.25H4.5zm.62 3h-.62v1.25h7.12V11z" clip-rule="evenodd" fill="#666" fill-rule="evenodd"/></svg>
+</file>
+
+<file path="public/globe.svg">
+<svg fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><g clip-path="url(#a)"><path fill-rule="evenodd" clip-rule="evenodd" d="M10.27 14.1a6.5 6.5 0 0 0 3.67-3.45q-1.24.21-2.7.34-.31 1.83-.97 3.1M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16m.48-1.52a7 7 0 0 1-.96 0H7.5a4 4 0 0 1-.84-1.32q-.38-.89-.63-2.08a40 40 0 0 0 3.92 0q-.25 1.2-.63 2.08a4 4 0 0 1-.84 1.31zm2.94-4.76q1.66-.15 2.95-.43a7 7 0 0 0 0-2.58q-1.3-.27-2.95-.43a18 18 0 0 1 0 3.44m-1.27-3.54a17 17 0 0 1 0 3.64 39 39 0 0 1-4.3 0 17 17 0 0 1 0-3.64 39 39 0 0 1 4.3 0m1.1-1.17q1.45.13 2.69.34a6.5 6.5 0 0 0-3.67-3.44q.65 1.26.98 3.1M8.48 1.5l.01.02q.41.37.84 1.31.38.89.63 2.08a40 40 0 0 0-3.92 0q.25-1.2.63-2.08a4 4 0 0 1 .85-1.32 7 7 0 0 1 .96 0m-2.75.4a6.5 6.5 0 0 0-3.67 3.44 29 29 0 0 1 2.7-.34q.31-1.83.97-3.1M4.58 6.28q-1.66.16-2.95.43a7 7 0 0 0 0 2.58q1.3.27 2.95.43a18 18 0 0 1 0-3.44m.17 4.71q-1.45-.12-2.69-.34a6.5 6.5 0 0 0 3.67 3.44q-.65-1.27-.98-3.1" fill="#666"/></g><defs><clipPath id="a"><path fill="#fff" d="M0 0h16v16H0z"/></clipPath></defs></svg>
+</file>
+
+<file path="public/next.svg">
+<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 394 80"><path fill="#000" d="M262 0h68.5v12.7h-27.2v66.6h-13.6V12.7H262V0ZM149 0v12.7H94v20.4h44.3v12.6H94v21h55v12.6H80.5V0h68.7zm34.3 0h-17.8l63.8 79.4h17.9l-32-39.7 32-39.6h-17.9l-23 28.6-23-28.6zm18.3 56.7-9-11-27.1 33.7h17.8l18.3-22.7z"/><path fill="#000" d="M81 79.3 17 0H0v79.3h13.6V17l50.2 62.3H81Zm252.6-.4c-1 0-1.8-.4-2.5-1s-1.1-1.6-1.1-2.6.3-1.8 1-2.5 1.6-1 2.6-1 1.8.3 2.5 1a3.4 3.4 0 0 1 .6 4.3 3.7 3.7 0 0 1-3 1.8zm23.2-33.5h6v23.3c0 2.1-.4 4-1.3 5.5a9.1 9.1 0 0 1-3.8 3.5c-1.6.8-3.5 1.3-5.7 1.3-2 0-3.7-.4-5.3-1s-2.8-1.8-3.7-3.2c-.9-1.3-1.4-3-1.4-5h6c.1.8.3 1.6.7 2.2s1 1.2 1.6 1.5c.7.4 1.5.5 2.4.5 1 0 1.8-.2 2.4-.6a4 4 0 0 0 1.6-1.8c.3-.8.5-1.8.5-3V45.5zm30.9 9.1a4.4 4.4 0 0 0-2-3.3 7.5 7.5 0 0 0-4.3-1.1c-1.3 0-2.4.2-3.3.5-.9.4-1.6 1-2 1.6a3.5 3.5 0 0 0-.3 4c.3.5.7.9 1.3 1.2l1.8 1 2 .5 3.2.8c1.3.3 2.5.7 3.7 1.2a13 13 0 0 1 3.2 1.8 8.1 8.1 0 0 1 3 6.5c0 2-.5 3.7-1.5 5.1a10 10 0 0 1-4.4 3.5c-1.8.8-4.1 1.2-6.8 1.2-2.6 0-4.9-.4-6.8-1.2-2-.8-3.4-2-4.5-3.5a10 10 0 0 1-1.7-5.6h6a5 5 0 0 0 3.5 4.6c1 .4 2.2.6 3.4.6 1.3 0 2.5-.2 3.5-.6 1-.4 1.8-1 2.4-1.7a4 4 0 0 0 .8-2.4c0-.9-.2-1.6-.7-2.2a11 11 0 0 0-2.1-1.4l-3.2-1-3.8-1c-2.8-.7-5-1.7-6.6-3.2a7.2 7.2 0 0 1-2.4-5.7 8 8 0 0 1 1.7-5 10 10 0 0 1 4.3-3.5c2-.8 4-1.2 6.4-1.2 2.3 0 4.4.4 6.2 1.2 1.8.8 3.2 2 4.3 3.4 1 1.4 1.5 3 1.5 5h-5.8z"/></svg>
+</file>
+
+<file path="public/vercel.svg">
+<svg fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1155 1000"><path d="m577.3 0 577.4 1000H0z" fill="#fff"/></svg>
+</file>
+
+<file path="public/window.svg">
+<svg fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path fill-rule="evenodd" clip-rule="evenodd" d="M1.5 2.5h13v10a1 1 0 0 1-1 1h-11a1 1 0 0 1-1-1zM0 1h16v11.5a2.5 2.5 0 0 1-2.5 2.5h-11A2.5 2.5 0 0 1 0 12.5zm3.75 4.5a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5M7 4.75a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0m1.75.75a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5" fill="#666"/></svg>
+</file>
+
+<file path="README.md">
+This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+
+## Getting Started
+
+First, run the development server:
+
+```bash
+npm run dev
+# or
+yarn dev
+# or
+pnpm dev
+# or
+bun dev
+```
+
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+
+You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+
+This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+
+## Learn More
+
+To learn more about Next.js, take a look at the following resources:
+
+- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
+- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+
+You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+
+## Deploy on Vercel
+
+The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+
+Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+</file>
+
+<file path="src/app/api/calculate/route.ts">
+import { NextResponse } from "next/server";
+import {
+  CalculateRequest,
+  CalculateResponse,
+  DiscountRule,
+  AppliedDiscount,
+  CalculatedPrice,
+} from "@/types";
+
+// Mock implementation of discounts database
+const MOCK_RULES: DiscountRule[] = [
+  {
+    id: "r1",
+    mallName: "coupang",
+    ruleType: "membership",
+    ruleName: "와우 멤버십",
+    discountType: "fixed",
+    discountValue: 0,
+    conditions: "무료배송",
+  },
+  {
+    id: "r2",
+    mallName: "coupang",
+    ruleType: "coupon",
+    ruleName: "첫 구매 쿠폰",
+    discountType: "percent",
+    discountValue: 10,
+    maxDiscount: 5000,
+  },
+  {
+    id: "r3",
+    mallName: "naver",
+    ruleType: "membership",
+    ruleName: "네이버플러스",
+    discountType: "percent",
+    discountValue: 4,
+  },
+];
+
+export async function POST(request: Request) {
+  try {
+    const body: CalculateRequest = await request.json();
+
+    // In a real app, we would fetch the Product and MallPrices from DB using body.productId
+    // Here we just mock that data again
+    const mockPrices = [
+      { mallName: "coupang", basePrice: 25000, shippingFee: 3000 },
+      { mallName: "naver", basePrice: 24500, shippingFee: 3000 },
+    ] as const;
+
+    const results: CalculatedPrice[] = mockPrices.map((price) => {
+      const selectedRules = body.selectedRuleIds[price.mallName] || [];
+      const appliedDiscounts: AppliedDiscount[] = [];
+      let currentPrice = price.basePrice + price.shippingFee;
+
+      // Apply selected rules
+      selectedRules.forEach((ruleId) => {
+        const rule = MOCK_RULES.find((r) => r.id === ruleId);
+        if (rule) {
+          if (rule.ruleName.includes("와우") && price.shippingFee > 0) {
+            // Special logic for shipping fee
+            appliedDiscounts.push({
+              ruleId: rule.id,
+              ruleName: rule.ruleName,
+              amount: price.shippingFee,
+            });
+            currentPrice -= price.shippingFee;
+          } else if (rule.discountType === "fixed") {
+            appliedDiscounts.push({
+              ruleId: rule.id,
+              ruleName: rule.ruleName,
+              amount: rule.discountValue,
+            });
+            currentPrice -= rule.discountValue;
+          } else {
+            let amount = (currentPrice * rule.discountValue) / 100;
+            if (rule.maxDiscount) amount = Math.min(amount, rule.maxDiscount);
+            appliedDiscounts.push({
+              ruleId: rule.id,
+              ruleName: rule.ruleName,
+              amount,
+            });
+            currentPrice -= amount;
+          }
+        }
+      });
+
+      return {
+        mallName: price.mallName,
+        basePrice: price.basePrice,
+        shippingFee: price.shippingFee,
+        finalPrice: Math.max(0, currentPrice),
+        appliedDiscounts,
+        isCheapest: false, // Calculated after
+        priceDifference: 0, // Calculated after
+      };
+    });
+
+    // Sort and set cheapest
+    results.sort((a, b) => a.finalPrice - b.finalPrice);
+    results[0].isCheapest = true;
+    const cheapestPrice = results[0].finalPrice;
+
+    results.forEach((r) => {
+      r.priceDifference = r.finalPrice - cheapestPrice;
+    });
+
+    const response: CalculateResponse = {
+      results,
+      cheapestMall: results[0].mallName,
+    };
+
+    return NextResponse.json(response);
+  } catch {
+    return NextResponse.json({ error: "Calculation failed" }, { status: 500 });
+  }
+}
+</file>
+
+<file path="src/app/compare/[productId]/page.tsx">
+"use client";
+
+import { useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
+import { PriceCard } from "@/components/features/PriceCard";
+import { DiscountRule, MallPrice, SearchResponse } from "@/types";
+import { Skeleton } from "@/components/ui/skeleton";
+import { useAppStore } from "@/store";
+import { AlertCircle } from "lucide-react";
+
+// Mock Data for MVP
+const MOCK_DATA: Record<string, SearchResponse & { rules: DiscountRule[] }> = {
+  "mock-product-id": {
+    product: {
+      id: "mock-product-id",
+      name: "Apple 에어팟 프로 2세대 맥세이프 호환 (USB-C)",
+      imageUrl:
+        "https://dummyimage.com/400x400/eeeeee/000000&text=AirPods+Pro+2",
+      createdAt: new Date().toISOString(),
+    },
+    prices: [
+      {
+        id: "p1",
+        productId: "mock-product-id",
+        mallName: "coupang",
+        basePrice: 329000,
+        shippingFee: 0,
+        productUrl: "https://www.coupang.com",
+        fetchedAt: new Date().toISOString(),
+      },
+      {
+        id: "p2",
+        productId: "mock-product-id",
+        mallName: "naver",
+        basePrice: 315000,
+        shippingFee: 3000,
+        productUrl: "https://shopping.naver.com",
+        fetchedAt: new Date().toISOString(),
+      },
+      {
+        id: "p3",
+        productId: "mock-product-id",
+        mallName: "elevenst",
+        basePrice: 335000,
+        shippingFee: 0,
+        productUrl: "https://www.11st.co.kr",
+        fetchedAt: new Date().toISOString(),
+      },
+    ],
+    rules: [
+      {
+        id: "r1",
+        mallName: "coupang",
+        ruleType: "membership",
+        ruleName: "와우 멤버십",
+        discountType: "fixed",
+        discountValue: 0, // In this case mostly free shipping, but let's say 0 for basic
+        conditions: "무료배송 혜택",
+      },
+      {
+        id: "r2",
+        mallName: "coupang",
+        ruleType: "coupon",
+        ruleName: "웰컴 쿠폰",
+        discountType: "percent",
+        discountValue: 10,
+        maxDiscount: 10000,
+      },
+      {
+        id: "r3",
+        mallName: "naver",
+        ruleType: "membership",
+        ruleName: "플러스 멤버십",
+        discountType: "percent",
+        discountValue: 4,
+        conditions: "최대 4% 적립 (가격 차감 효과)",
+      },
+      {
+        id: "r4",
+        mallName: "elevenst",
+        ruleType: "coupon",
+        ruleName: "우주패스 할인",
+        discountType: "fixed",
+        discountValue: 5000,
+      },
+      {
+        id: "r5",
+        mallName: "elevenst",
+        ruleType: "point",
+        ruleName: "SK Pay 포인트",
+        discountType: "fixed",
+        discountValue: 1000,
+        conditions: "1,000P 보유 시",
+      },
+    ],
+  },
+};
+
+export default function ComparePage({
+  params,
+}: {
+  params: { productId: string };
+}) {
+  const searchParams = useSearchParams();
+  const query = searchParams.get("q");
+  const { productId } = params;
+
+  const [data, setData] = useState<
+    (SearchResponse & { rules: DiscountRule[] }) | null
+  >(null);
+  const [loading, setLoading] = useState(true);
+  const { selectedDiscounts } = useAppStore();
+
+  useEffect(() => {
+    // Simulate API fetch delay
+    const timer = setTimeout(() => {
+      // In real app: fetch(`/api/products/${productId}`)...
+      const result = MOCK_DATA["mock-product-id"]; // Always return mock for now
+      setData(result);
+      setLoading(false);
+    }, 1500);
+
+    return () => clearTimeout(timer);
+  }, [productId]);
+
+  // Dynamic lowest price calculation logic for sorting
+  const getFinalPrice = (price: MallPrice, rules: DiscountRule[]) => {
+    const selectedIds = selectedDiscounts[price.mallName] || [];
+    const final = price.basePrice + price.shippingFee;
+    let discountTotal = 0;
+
+    rules
+      .filter(
+        (r) => r.mallName === price.mallName && selectedIds.includes(r.id),
+      )
+      .forEach((r) => {
+        if (r.discountType === "fixed") {
+          discountTotal += r.discountValue;
+        } else {
+          let amount = (final * r.discountValue) / 100;
+          if (r.maxDiscount) amount = Math.min(amount, r.maxDiscount);
+          discountTotal += amount;
+        }
+      });
+
+    return Math.max(0, final - discountTotal);
+  };
+
+  if (loading) {
+    return (
+      <div className="container py-12 space-y-8 max-w-5xl">
+        <div className="space-y-4">
+          <Skeleton className="h-8 w-2/3 max-w-md" />
+          <Skeleton className="h-4 w-1/3" />
+        </div>
+        <div className="grid md:grid-cols-3 gap-6">
+          {[1, 2, 3].map((i) => (
+            <Skeleton key={i} className="h-[400px] rounded-xl" />
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  if (!data) {
+    return (
+      <div className="container py-20 text-center space-y-4">
+        <AlertCircle className="mx-auto h-12 w-12 text-muted-foreground" />
+        <h2 className="text-xl font-bold">상품을 찾을 수 없습니다</h2>
+        <p className="text-muted-foreground">
+          요청하신 상품 정보가 없거나 삭제되었습니다.
+        </p>
+      </div>
+    );
+  }
+
+  // Calculate prices for sorting
+  const pricesWithCalc = data.prices.map((price) => ({
+    ...price,
+    finalPrice: getFinalPrice(price, data.rules),
+  }));
+
+  // Sort by final price
+  pricesWithCalc.sort((a, b) => a.finalPrice - b.finalPrice);
+
+  const lowestPrice = pricesWithCalc[0].finalPrice;
+
+  return (
+    <div className="container py-8 md:py-12 space-y-8 max-w-6xl">
+      {/* Product Header */}
+      <div className="flex flex-col md:flex-row gap-6 md:items-center border-b pb-8">
+        <div className="relative w-24 h-24 md:w-32 md:h-32 rounded-lg border bg-white overflow-hidden shrink-0">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={data.product.imageUrl || "/placeholder.png"}
+            alt={data.product.name}
+            className="object-contain w-full h-full p-2"
+          />
+        </div>
+        <div className="space-y-2 flex-1">
+          <h1 className="text-2xl md:text-3xl font-bold leading-tight break-keep">
+            {data.product.name}
+          </h1>
+          <p className="text-muted-foreground">
+            검색어:{" "}
+            <span className="font-medium text-foreground">
+              {query || productId}
+            </span>
+          </p>
+        </div>
+      </div>
+
+      {/* Helper Text */}
+      <div className="bg-primary/5 p-4 rounded-lg text-sm text-primary-foreground/90 flex items-start md:items-center gap-2">
+        <span className="text-xl shrink-0">💡</span>
+        <p className="text-zinc-700">
+          <strong>보유하신 쿠폰이나 멤버십을 체크해보세요!</strong>
+          <br className="md:hidden" />
+          실시간으로 내 최종가가 계산되어 순위가 바뀝니다.
+        </p>
+      </div>
+
+      {/* Price Cards Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 items-start">
+        {pricesWithCalc.map((price) => (
+          <PriceCard
+            key={price.id}
+            price={price}
+            rules={data.rules.filter((r) => r.mallName === price.mallName)}
+            isCheapest={price.finalPrice === lowestPrice}
+            priceDifference={price.finalPrice - lowestPrice}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
+</file>
+
+<file path="src/app/not-found.tsx">
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { Home } from "lucide-react";
+
+export default function NotFound() {
+  return (
+    <div className="container flex flex-col items-center justify-center min-h-[calc(100vh-140px)] py-12 gap-6 text-center">
+      <div className="space-y-2">
+        <h1 className="text-6xl font-bold text-muted-foreground">404</h1>
+        <h2 className="text-2xl font-semibold">페이지를 찾을 수 없습니다</h2>
+        <p className="text-muted-foreground">
+          요청하신 페이지가 존재하지 않거나 이동되었습니다.
+        </p>
+      </div>
+      <Button asChild>
+        <Link href="/">
+          <Home className="mr-2 h-4 w-4" />
+          홈으로 돌아가기
+        </Link>
+      </Button>
+    </div>
+  );
+}
+</file>
+
+<file path="src/app/search/page.tsx">
+"use client";
+
+import { Suspense, useEffect, useState } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  AlertCircle,
+  Search,
+  ArrowLeft,
+  ExternalLink,
+  Star,
+  Truck,
+} from "lucide-react";
+import { SearchResultItem } from "@/lib/scrapers/types";
+import { cn } from "@/lib/utils";
+
+interface SearchApiResponse {
+  keyword: string;
+  results: {
+    coupang: SearchResultItem[];
+    naver: SearchResultItem[];
+    elevenst: SearchResultItem[];
+  };
+  totalCount: number;
+  searchedAt: string;
+}
+
+const MALL_INFO = {
+  coupang: {
+    name: "쿠팡",
+    color: "bg-orange-500",
+    textColor: "text-orange-600",
+    borderColor: "border-orange-200",
+  },
+  naver: {
+    name: "네이버",
+    color: "bg-green-500",
+    textColor: "text-green-600",
+    borderColor: "border-green-200",
+  },
+  elevenst: {
+    name: "11번가",
+    color: "bg-red-500",
+    textColor: "text-red-600",
+    borderColor: "border-red-200",
+  },
+} as const;
+
+function SearchResultsContent() {
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const query = searchParams.get("q") || "";
+
+  const [searchInput, setSearchInput] = useState(query);
+  const [data, setData] = useState<SearchApiResponse | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (query) {
+      performSearch(query);
+    }
+  }, [query]);
+
+  const performSearch = async (keyword: string) => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      const response = await fetch("/api/products/search", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ query: keyword }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "검색에 실패했습니다.");
+      }
+
+      const result: SearchApiResponse = await response.json();
+      setData(result);
+    } catch (err) {
+      setError(
+        err instanceof Error ? err.message : "검색 중 오류가 발생했습니다.",
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchInput.trim().length >= 2) {
+      router.push(`/search?q=${encodeURIComponent(searchInput.trim())}`);
+    }
+  };
+
+  const formatPrice = (price: number) => {
+    return new Intl.NumberFormat("ko-KR").format(price);
+  };
+
+  // 모든 결과를 가격순으로 정렬
+  const getAllResults = () => {
+    if (!data) return [];
+    const allResults: SearchResultItem[] = [
+      ...data.results.coupang,
+      ...data.results.naver,
+      ...data.results.elevenst,
+    ];
+    return allResults.sort((a, b) => a.price - b.price);
+  };
+
+  const sortedResults = getAllResults();
+
+  return (
+    <div className="container py-8 max-w-6xl">
+      {/* Header */}
+      <div className="flex flex-col gap-6 mb-8">
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => router.push("/")}
+          className="w-fit -ml-2"
+        >
+          <ArrowLeft className="mr-2 h-4 w-4" />
+          홈으로
+        </Button>
+
+        {/* Search Form */}
+        <form onSubmit={handleSearch} className="flex gap-3">
+          <Input
+            value={searchInput}
+            onChange={(e) => setSearchInput(e.target.value)}
+            placeholder="검색어를 입력하세요"
+            className="flex-1 h-12 text-lg"
+          />
+          <Button type="submit" size="lg" className="h-12 px-6">
+            <Search className="mr-2 h-5 w-5" />
+            검색
+          </Button>
+        </form>
+
+        {query && (
+          <div className="flex items-center gap-2 text-muted-foreground">
+            <span>
+              <strong className="text-foreground">&quot;{query}&quot;</strong>{" "}
+              검색 결과
+            </span>
+            {data && <span className="text-sm">(총 {data.totalCount}개)</span>}
+          </div>
+        )}
+      </div>
+
+      {/* Loading State */}
+      {loading && (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {[1, 2, 3, 4, 5, 6].map((i) => (
+            <div key={i} className="rounded-xl border p-4 space-y-4">
+              <Skeleton className="h-48 w-full rounded-lg" />
+              <Skeleton className="h-4 w-full" />
+              <Skeleton className="h-4 w-2/3" />
+              <Skeleton className="h-8 w-1/2" />
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Error State */}
+      {error && (
+        <div className="text-center py-16 space-y-4">
+          <AlertCircle className="mx-auto h-12 w-12 text-destructive" />
+          <h2 className="text-xl font-bold">검색 오류</h2>
+          <p className="text-muted-foreground">{error}</p>
+          <Button onClick={() => performSearch(query)} variant="outline">
+            다시 시도
+          </Button>
+        </div>
+      )}
+
+      {/* No Results */}
+      {!loading && !error && data && data.totalCount === 0 && (
+        <div className="text-center py-16 space-y-4">
+          <AlertCircle className="mx-auto h-12 w-12 text-muted-foreground" />
+          <h2 className="text-xl font-bold">검색 결과가 없습니다</h2>
+          <p className="text-muted-foreground">
+            다른 검색어로 다시 시도해보세요.
+          </p>
+        </div>
+      )}
+
+      {/* Results Grid */}
+      {!loading && !error && data && data.totalCount > 0 && (
+        <>
+          {/* Stats */}
+          <div className="flex gap-4 mb-6 flex-wrap">
+            {Object.entries(data.results).map(([mall, items]) => (
+              <div
+                key={mall}
+                className={cn(
+                  "px-4 py-2 rounded-full border text-sm font-medium",
+                  MALL_INFO[mall as keyof typeof MALL_INFO].borderColor,
+                )}
+              >
+                <span
+                  className={
+                    MALL_INFO[mall as keyof typeof MALL_INFO].textColor
+                  }
+                >
+                  {MALL_INFO[mall as keyof typeof MALL_INFO].name}
+                </span>
+                <span className="text-muted-foreground ml-2">
+                  {items.length}개
+                </span>
+              </div>
+            ))}
+          </div>
+
+          {/* Product List */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {sortedResults.map((item, index) => {
+              const mallInfo = MALL_INFO[item.mallName];
+              const isLowest = index === 0;
+
+              return (
+                <a
+                  key={`${item.mallName}-${index}`}
+                  href={item.productUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={cn(
+                    "group relative rounded-xl border bg-card p-4 pt-12 space-y-4 transition-all hover:shadow-lg hover:-translate-y-1",
+                    isLowest && "ring-2 ring-primary",
+                  )}
+                >
+                  {/* Badge */}
+                  <div className="absolute top-3 left-3 flex gap-2 z-10">
+                    <span
+                      className={cn(
+                        "px-2 py-1 rounded-md text-xs font-bold text-white",
+                        mallInfo.color,
+                      )}
+                    >
+                      {mallInfo.name}
+                    </span>
+                    {isLowest && (
+                      <span className="px-2 py-1 rounded-md text-xs font-bold bg-primary text-primary-foreground">
+                        최저가
+                      </span>
+                    )}
+                  </div>
+
+                  {/* Image */}
+                  <div className="aspect-square rounded-lg bg-muted overflow-hidden">
+                    {item.imageUrl ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={item.imageUrl}
+                        alt={item.productName}
+                        className="w-full h-full object-contain"
+                        onError={(e) => {
+                          (e.target as HTMLImageElement).style.display = "none";
+                        }}
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center text-muted-foreground">
+                        이미지 없음
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Product Info */}
+                  <div className="space-y-2">
+                    <h3 className="font-medium line-clamp-2 min-h-[2.5rem] group-hover:text-primary transition-colors">
+                      {item.productName}
+                    </h3>
+
+                    <div className="flex items-baseline gap-2">
+                      <span className="text-2xl font-bold">
+                        {formatPrice(item.price)}
+                      </span>
+                      <span className="text-muted-foreground">원</span>
+                    </div>
+
+                    {item.originalPrice && item.originalPrice > item.price && (
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm text-muted-foreground line-through">
+                          {formatPrice(item.originalPrice)}원
+                        </span>
+                        <span className="text-sm font-medium text-destructive">
+                          {Math.round(
+                            (1 - item.price / item.originalPrice) * 100,
+                          )}
+                          % 할인
+                        </span>
+                      </div>
+                    )}
+
+                    {/* Features */}
+                    <div className="flex flex-wrap gap-2 pt-2">
+                      {item.isRocketDelivery && (
+                        <span className="inline-flex items-center gap-1 text-xs text-blue-600 bg-blue-50 px-2 py-1 rounded">
+                          🚀 로켓배송
+                        </span>
+                      )}
+                      {item.isFreeShipping && (
+                        <span className="inline-flex items-center gap-1 text-xs text-green-600 bg-green-50 px-2 py-1 rounded">
+                          <Truck className="h-3 w-3" />
+                          무료배송
+                        </span>
+                      )}
+                      {item.rating && (
+                        <span className="inline-flex items-center gap-1 text-xs text-amber-600 bg-amber-50 px-2 py-1 rounded">
+                          <Star className="h-3 w-3 fill-current" />
+                          {item.rating}
+                        </span>
+                      )}
+                      {item.reviewCount && (
+                        <span className="text-xs text-muted-foreground">
+                          리뷰 {item.reviewCount.toLocaleString()}개
+                        </span>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Link Indicator */}
+                  <div className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <ExternalLink className="h-5 w-5 text-muted-foreground" />
+                  </div>
+                </a>
+              );
+            })}
+          </div>
+        </>
+      )}
+
+      {/* Empty State - No Query */}
+      {!query && (
+        <div className="text-center py-16 space-y-4">
+          <Search className="mx-auto h-12 w-12 text-muted-foreground" />
+          <h2 className="text-xl font-bold">상품을 검색해보세요</h2>
+          <p className="text-muted-foreground">
+            쿠팡, 네이버, 11번가의 가격을 한번에 비교할 수 있습니다.
+          </p>
+        </div>
+      )}
+    </div>
+  );
+}
+
+export default function SearchResultsPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="container py-8 max-w-6xl">
+          <div className="flex flex-col gap-6 mb-8">
+            <Skeleton className="h-10 w-24" />
+            <Skeleton className="h-12 w-full" />
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {[1, 2, 3, 4, 5, 6].map((i) => (
+              <div key={i} className="rounded-xl border p-4 space-y-4">
+                <Skeleton className="h-48 w-full rounded-lg" />
+                <Skeleton className="h-4 w-full" />
+                <Skeleton className="h-4 w-2/3" />
+                <Skeleton className="h-8 w-1/2" />
+              </div>
+            ))}
+          </div>
+        </div>
+      }
+    >
+      <SearchResultsContent />
+    </Suspense>
+  );
+}
+</file>
+
+<file path="src/components/features/PriceCard.tsx">
+"use client";
+
+import { useAppStore } from "@/store";
+import { MallPrice, DiscountRule, MallID } from "@/types";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label";
+import { ExternalLink, ShoppingBag } from "lucide-react";
+import Image from "next/image";
+
+interface PriceCardProps {
+  price: MallPrice;
+  rules: DiscountRule[];
+  isCheapest: boolean;
+  priceDifference: number;
+}
+
+const MALL_LOGOS: Record<MallID, string> = {
+  coupang:
+    "https://upload.wikimedia.org/wikipedia/commons/f/ff/Coupang_logo.svg", // Placeholder URL
+  naver:
+    "https://upload.wikimedia.org/wikipedia/commons/b/b1/Naver_logo_initial.svg", // Placeholder URL
+  elevenst: "https://upload.wikimedia.org/wikipedia/commons/f/f5/11st_logo.svg", // Placeholder URL
+};
+
+const MALL_NAMES: Record<MallID, string> = {
+  coupang: "쿠팡",
+  naver: "네이버",
+  elevenst: "11번가",
+};
+
+export function PriceCard({
+  price,
+  rules,
+  isCheapest,
+  priceDifference,
+}: PriceCardProps) {
+  const { selectedDiscounts, toggleDiscount } = useAppStore();
+  const mallRules = rules; // Already filtered by parent if needed, or filter here: rules.filter(r => r.mallName === price.mallName)
+
+  // Calculate local final price for this card based on selection (UI only logic, centralized logic in store/calculator is better but for MVP this works)
+  // Actually, we should use the calculated result passed from parent or store.
+  // Let's assume the parent passes the calculated state or we compute it lightly here for display.
+  // Better: The store should hold the 'calculatedResults' and we find the one matching this mall.
+
+  const selectedRuleIds = selectedDiscounts[price.mallName] || [];
+
+  // Simple calculation for display (in real app, use the centralized calculator result)
+  let calculatedFinalPrice = price.basePrice + price.shippingFee;
+  let totalDiscount = 0;
+
+  mallRules.forEach((rule) => {
+    if (selectedRuleIds.includes(rule.id)) {
+      let discountAmount = 0;
+      if (rule.discountType === "fixed") {
+        discountAmount = rule.discountValue;
+      } else {
+        discountAmount = (calculatedFinalPrice * rule.discountValue) / 100;
+        if (rule.maxDiscount) {
+          discountAmount = Math.min(discountAmount, rule.maxDiscount);
+        }
+      }
+      totalDiscount += discountAmount;
+    }
+  });
+
+  calculatedFinalPrice -= totalDiscount;
+  if (calculatedFinalPrice < 0) calculatedFinalPrice = 0;
+
+  return (
+    <Card
+      className={`w-full transition-all duration-200 ${isCheapest ? "border-primary shadow-lg ring-2 ring-primary/20 scale-[1.02]" : "border-border"}`}
+    >
+      <CardHeader className="pb-4">
+        <div className="flex justify-between items-start">
+          <div className="flex items-center space-x-2">
+            <div className="w-8 h-8 relative rounded-full overflow-hidden border bg-white flex items-center justify-center font-bold text-xs text-muted-foreground">
+              {/* Image would go here, text fallback for now */}
+              {MALL_NAMES[price.mallName][0]}
+            </div>
+            <CardTitle className="text-lg font-bold">
+              {MALL_NAMES[price.mallName]}
+            </CardTitle>
+          </div>
+          {isCheapest && (
+            <Badge className="bg-primary text-primary-foreground hover:bg-primary">
+              최저가🏆
+            </Badge>
+          )}
+          {!isCheapest && priceDifference > 0 && (
+            <Badge variant="secondary" className="text-muted-foreground">
+              +{priceDifference.toLocaleString()}원
+            </Badge>
+          )}
+        </div>
+      </CardHeader>
+
+      <CardContent className="space-y-4">
+        {/* Base Price & Shipping */}
+        <div className="space-y-1 text-sm">
+          <div className="flex justify-between text-muted-foreground">
+            <span>기본가</span>
+            <span>{price.basePrice.toLocaleString()}원</span>
+          </div>
+          <div className="flex justify-between text-muted-foreground">
+            <span>배송비</span>
+            <span>
+              {price.shippingFee === 0
+                ? "무료"
+                : `+${price.shippingFee.toLocaleString()}원`}
+            </span>
+          </div>
+        </div>
+
+        {/* Separator */}
+        <div className="h-px bg-border" />
+
+        {/* Discount Options */}
+        <div className="space-y-3">
+          <span className="text-sm font-medium">✨ 적용 가능한 혜택</span>
+          {mallRules.length === 0 ? (
+            <p className="text-xs text-muted-foreground">
+              적용 가능한 혜택이 없습니다.
+            </p>
+          ) : (
+            <div className="space-y-2">
+              {mallRules.map((rule) => (
+                <div key={rule.id} className="flex items-start space-x-2">
+                  <Checkbox
+                    id={rule.id}
+                    checked={selectedRuleIds.includes(rule.id)}
+                    onCheckedChange={() =>
+                      toggleDiscount(price.mallName, rule.id)
+                    }
+                  />
+                  <div className="grid gap-1.5 leading-none">
+                    <Label
+                      htmlFor={rule.id}
+                      className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
+                    >
+                      {rule.ruleName}
+                      <span className="ml-1 text-xs text-primary">
+                        {rule.discountType === "percent"
+                          ? `(-${rule.discountValue}%)`
+                          : `(-${rule.discountValue.toLocaleString()}원)`}
+                      </span>
+                    </Label>
+                    {rule.conditions && (
+                      <p className="text-xs text-muted-foreground">
+                        {rule.conditions}
+                      </p>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </CardContent>
+
+      <CardFooter className="flex-col space-y-4 pt-2">
+        <div className="w-full flex justify-between items-end bg-secondary/20 p-4 rounded-lg">
+          <span className="text-sm font-medium text-muted-foreground">
+            내 최종가
+          </span>
+          <span
+            className={`text-2xl font-extrabold ${isCheapest ? "text-primary" : "text-foreground"}`}
+          >
+            {calculatedFinalPrice.toLocaleString()}원
+          </span>
+        </div>
+
+        <Button
+          className="w-full h-11 text-base"
+          variant={isCheapest ? "default" : "outline"}
+          asChild
+        >
+          <a href={price.productUrl} target="_blank" rel="noopener noreferrer">
+            <span className="mr-2">
+              {isCheapest ? "이 가격으로 구매하기" : "상품 보러가기"}
+            </span>
+            <ExternalLink className="h-4 w-4" />
+          </a>
+        </Button>
+      </CardFooter>
+    </Card>
+  );
+}
+</file>
+
+<file path="src/components/layout/Footer.tsx">
+export function Footer() {
+  return (
+    <footer className="border-t py-6 md:py-0">
+      <div className="container flex flex-col items-center justify-between gap-4 md:h-24 md:flex-row">
+        <div className="flex flex-col items-center gap-4 px-8 md:flex-row md:gap-2 md:px-0">
+          <p className="text-center text-sm leading-loose text-muted-foreground md:text-left">
+            Built by{" "}
+            <a
+              href="#"
+              target="_blank"
+              rel="noreferrer"
+              className="font-medium underline underline-offset-4"
+            >
+              FitLowPrice Team
+            </a>
+            . 결정 피로를 줄여드립니다.
+          </p>
+        </div>
+      </div>
+    </footer>
+  );
+}
+</file>
+
+<file path="src/components/layout/Header.tsx">
+import Link from "next/link";
+import { ShoppingCart } from "lucide-react";
+
+export function Header() {
+  return (
+    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <div className="container flex h-14 items-center">
+        <Link href="/" className="mr-6 flex items-center space-x-2">
+          <ShoppingCart className="h-6 w-6 text-primary" />
+          <span className="hidden font-bold sm:inline-block">FitLowPrice</span>
+        </Link>
+        <div className="flex flex-1 items-center justify-between space-x-2 md:justify-end">
+          <nav className="flex items-center space-x-6 text-sm font-medium">
+            <Link
+              href="/about"
+              className="transition-colors hover:text-foreground/80 text-foreground/60"
+            >
+              어떻게 쓰나요?
+            </Link>
+          </nav>
+        </div>
+      </div>
+    </header>
+  );
+}
+</file>
+
+<file path="src/components/ui/badge.tsx">
+import * as React from "react"
+import { Slot } from "@radix-ui/react-slot"
+import { cva, type VariantProps } from "class-variance-authority"
+
+import { cn } from "@/lib/utils"
+
+const badgeVariants = cva(
+  "inline-flex items-center justify-center rounded-full border px-2 py-0.5 text-xs font-medium w-fit whitespace-nowrap shrink-0 [&>svg]:size-3 gap-1 [&>svg]:pointer-events-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive transition-[color,box-shadow] overflow-hidden",
+  {
+    variants: {
+      variant: {
+        default:
+          "border-transparent bg-primary text-primary-foreground [a&]:hover:bg-primary/90",
+        secondary:
+          "border-transparent bg-secondary text-secondary-foreground [a&]:hover:bg-secondary/90",
+        destructive:
+          "border-transparent bg-destructive text-white [a&]:hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60",
+        outline:
+          "text-foreground [a&]:hover:bg-accent [a&]:hover:text-accent-foreground",
+      },
+    },
+    defaultVariants: {
+      variant: "default",
+    },
+  }
+)
+
+function Badge({
+  className,
+  variant,
+  asChild = false,
+  ...props
+}: React.ComponentProps<"span"> &
+  VariantProps<typeof badgeVariants> & { asChild?: boolean }) {
+  const Comp = asChild ? Slot : "span"
+
+  return (
+    <Comp
+      data-slot="badge"
+      className={cn(badgeVariants({ variant }), className)}
+      {...props}
+    />
+  )
+}
+
+export { Badge, badgeVariants }
+</file>
+
+<file path="src/components/ui/button.tsx">
+import * as React from "react"
+import { Slot } from "@radix-ui/react-slot"
+import { cva, type VariantProps } from "class-variance-authority"
+
+import { cn } from "@/lib/utils"
+
+const buttonVariants = cva(
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive",
+  {
+    variants: {
+      variant: {
+        default: "bg-primary text-primary-foreground hover:bg-primary/90",
+        destructive:
+          "bg-destructive text-white hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60",
+        outline:
+          "border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50",
+        secondary:
+          "bg-secondary text-secondary-foreground hover:bg-secondary/80",
+        ghost:
+          "hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50",
+        link: "text-primary underline-offset-4 hover:underline",
+      },
+      size: {
+        default: "h-9 px-4 py-2 has-[>svg]:px-3",
+        sm: "h-8 rounded-md gap-1.5 px-3 has-[>svg]:px-2.5",
+        lg: "h-10 rounded-md px-6 has-[>svg]:px-4",
+        icon: "size-9",
+        "icon-sm": "size-8",
+        "icon-lg": "size-10",
+      },
+    },
+    defaultVariants: {
+      variant: "default",
+      size: "default",
+    },
+  }
+)
+
+function Button({
+  className,
+  variant = "default",
+  size = "default",
+  asChild = false,
+  ...props
+}: React.ComponentProps<"button"> &
+  VariantProps<typeof buttonVariants> & {
+    asChild?: boolean
+  }) {
+  const Comp = asChild ? Slot : "button"
+
+  return (
+    <Comp
+      data-slot="button"
+      data-variant={variant}
+      data-size={size}
+      className={cn(buttonVariants({ variant, size, className }))}
+      {...props}
+    />
+  )
+}
+
+export { Button, buttonVariants }
+</file>
+
+<file path="src/components/ui/card.tsx">
+import * as React from "react"
+
+import { cn } from "@/lib/utils"
+
+function Card({ className, ...props }: React.ComponentProps<"div">) {
+  return (
+    <div
+      data-slot="card"
+      className={cn(
+        "bg-card text-card-foreground flex flex-col gap-6 rounded-xl border py-6 shadow-sm",
+        className
+      )}
+      {...props}
+    />
+  )
+}
+
+function CardHeader({ className, ...props }: React.ComponentProps<"div">) {
+  return (
+    <div
+      data-slot="card-header"
+      className={cn(
+        "@container/card-header grid auto-rows-min grid-rows-[auto_auto] items-start gap-2 px-6 has-data-[slot=card-action]:grid-cols-[1fr_auto] [.border-b]:pb-6",
+        className
+      )}
+      {...props}
+    />
+  )
+}
+
+function CardTitle({ className, ...props }: React.ComponentProps<"div">) {
+  return (
+    <div
+      data-slot="card-title"
+      className={cn("leading-none font-semibold", className)}
+      {...props}
+    />
+  )
+}
+
+function CardDescription({ className, ...props }: React.ComponentProps<"div">) {
+  return (
+    <div
+      data-slot="card-description"
+      className={cn("text-muted-foreground text-sm", className)}
+      {...props}
+    />
+  )
+}
+
+function CardAction({ className, ...props }: React.ComponentProps<"div">) {
+  return (
+    <div
+      data-slot="card-action"
+      className={cn(
+        "col-start-2 row-span-2 row-start-1 self-start justify-self-end",
+        className
+      )}
+      {...props}
+    />
+  )
+}
+
+function CardContent({ className, ...props }: React.ComponentProps<"div">) {
+  return (
+    <div
+      data-slot="card-content"
+      className={cn("px-6", className)}
+      {...props}
+    />
+  )
+}
+
+function CardFooter({ className, ...props }: React.ComponentProps<"div">) {
+  return (
+    <div
+      data-slot="card-footer"
+      className={cn("flex items-center px-6 [.border-t]:pt-6", className)}
+      {...props}
+    />
+  )
+}
+
+export {
+  Card,
+  CardHeader,
+  CardFooter,
+  CardTitle,
+  CardAction,
+  CardDescription,
+  CardContent,
+}
+</file>
+
+<file path="src/components/ui/checkbox.tsx">
+"use client"
+
+import * as React from "react"
+import * as CheckboxPrimitive from "@radix-ui/react-checkbox"
+import { CheckIcon } from "lucide-react"
+
+import { cn } from "@/lib/utils"
+
+function Checkbox({
+  className,
+  ...props
+}: React.ComponentProps<typeof CheckboxPrimitive.Root>) {
+  return (
+    <CheckboxPrimitive.Root
+      data-slot="checkbox"
+      className={cn(
+        "peer border-input dark:bg-input/30 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground dark:data-[state=checked]:bg-primary data-[state=checked]:border-primary focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive size-4 shrink-0 rounded-[4px] border shadow-xs transition-shadow outline-none focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50",
+        className
+      )}
+      {...props}
+    >
+      <CheckboxPrimitive.Indicator
+        data-slot="checkbox-indicator"
+        className="grid place-content-center text-current transition-none"
+      >
+        <CheckIcon className="size-3.5" />
+      </CheckboxPrimitive.Indicator>
+    </CheckboxPrimitive.Root>
+  )
+}
+
+export { Checkbox }
+</file>
+
+<file path="src/components/ui/input.tsx">
+import * as React from "react"
+
+import { cn } from "@/lib/utils"
+
+function Input({ className, type, ...props }: React.ComponentProps<"input">) {
+  return (
+    <input
+      type={type}
+      data-slot="input"
+      className={cn(
+        "file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground dark:bg-input/30 border-input h-9 w-full min-w-0 rounded-md border bg-transparent px-3 py-1 text-base shadow-xs transition-[color,box-shadow] outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm",
+        "focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]",
+        "aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive",
+        className
+      )}
+      {...props}
+    />
+  )
+}
+
+export { Input }
+</file>
+
+<file path="src/components/ui/label.tsx">
+"use client"
+
+import * as React from "react"
+import * as LabelPrimitive from "@radix-ui/react-label"
+
+import { cn } from "@/lib/utils"
+
+function Label({
+  className,
+  ...props
+}: React.ComponentProps<typeof LabelPrimitive.Root>) {
+  return (
+    <LabelPrimitive.Root
+      data-slot="label"
+      className={cn(
+        "flex items-center gap-2 text-sm leading-none font-medium select-none group-data-[disabled=true]:pointer-events-none group-data-[disabled=true]:opacity-50 peer-disabled:cursor-not-allowed peer-disabled:opacity-50",
+        className
+      )}
+      {...props}
+    />
+  )
+}
+
+export { Label }
+</file>
+
+<file path="src/components/ui/skeleton.tsx">
+import { cn } from "@/lib/utils"
+
+function Skeleton({ className, ...props }: React.ComponentProps<"div">) {
+  return (
+    <div
+      data-slot="skeleton"
+      className={cn("bg-accent animate-pulse rounded-md", className)}
+      {...props}
+    />
+  )
+}
+
+export { Skeleton }
+</file>
+
+<file path="src/components/ui/sonner.tsx">
+"use client"
+
+import {
+  CircleCheckIcon,
+  InfoIcon,
+  Loader2Icon,
+  OctagonXIcon,
+  TriangleAlertIcon,
+} from "lucide-react"
+import { useTheme } from "next-themes"
+import { Toaster as Sonner, type ToasterProps } from "sonner"
+
+const Toaster = ({ ...props }: ToasterProps) => {
+  const { theme = "system" } = useTheme()
+
+  return (
+    <Sonner
+      theme={theme as ToasterProps["theme"]}
+      className="toaster group"
+      icons={{
+        success: <CircleCheckIcon className="size-4" />,
+        info: <InfoIcon className="size-4" />,
+        warning: <TriangleAlertIcon className="size-4" />,
+        error: <OctagonXIcon className="size-4" />,
+        loading: <Loader2Icon className="size-4 animate-spin" />,
+      }}
+      style={
+        {
+          "--normal-bg": "var(--popover)",
+          "--normal-text": "var(--popover-foreground)",
+          "--normal-border": "var(--border)",
+          "--border-radius": "var(--radius)",
+        } as React.CSSProperties
+      }
+      {...props}
+    />
+  )
+}
+
+export { Toaster }
+</file>
+
+<file path="src/lib/prisma.ts">
+import { PrismaClient } from "@prisma/client";
+
+const globalForPrisma = global as unknown as { prisma: PrismaClient };
+
+// Simple Prisma client for local development
+// Turso adapter will be configured at runtime in production
+export const prisma = globalForPrisma.prisma || new PrismaClient();
+
+if (process.env.NODE_ENV !== "production") {
+  globalForPrisma.prisma = prisma;
+}
+</file>
+
+<file path="src/lib/utils.ts">
+import { clsx, type ClassValue } from "clsx"
+import { twMerge } from "tailwind-merge"
+
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs))
+}
+</file>
+
+<file path="src/store/index.ts">
+import { create } from "zustand";
+import { persist } from "zustand/middleware";
+import { MallID, CalculatedPrice, SearchResponse } from "@/types";
+
+interface AppState {
+  // Search State
+  isLoading: boolean;
+  error: string | null;
+  searchQuery: string;
+  setSearchQuery: (query: string) => void;
+  setLoading: (loading: boolean) => void;
+  setError: (error: string | null) => void;
+
+  // Data State
+  currentProduct: SearchResponse["product"] | null;
+  currentPrices: SearchResponse["prices"] | [];
+  setSearchResult: (result: SearchResponse) => void;
+
+  // Selection State
+  selectedDiscounts: Record<MallID, string[]>; // Map of mall -> applied rule IDs
+  toggleDiscount: (mall: MallID, ruleId: string) => void;
+
+  // Calculation State
+  calculatedResults: CalculatedPrice[];
+  setCalculatedResults: (results: CalculatedPrice[]) => void;
+}
+
+export const useAppStore = create<AppState>()(
+  persist(
+    (set) => ({
+      isLoading: false,
+      error: null,
+      searchQuery: "",
+      currentProduct: null,
+      currentPrices: [],
+      selectedDiscounts: {
+        coupang: [],
+        naver: [],
+        elevenst: [],
+      },
+      calculatedResults: [],
+
+      setSearchQuery: (query) => set({ searchQuery: query }),
+      setLoading: (loading) => set({ isLoading: loading }),
+      setError: (error) => set({ error }),
+
+      setSearchResult: (result) =>
+        set({
+          currentProduct: result.product,
+          currentPrices: result.prices,
+          error: null,
+        }),
+
+      toggleDiscount: (mall, ruleId) =>
+        set((state) => {
+          const currentRules = state.selectedDiscounts[mall] || [];
+          const isSelected = currentRules.includes(ruleId);
+
+          return {
+            selectedDiscounts: {
+              ...state.selectedDiscounts,
+              [mall]: isSelected
+                ? currentRules.filter((id) => id !== ruleId)
+                : [...currentRules, ruleId],
+            },
+          };
+        }),
+
+      setCalculatedResults: (results) => set({ calculatedResults: results }),
+    }),
+    {
+      name: "fitlowprice-storage",
+      partialize: () => ({
+        // Persist only user preferences if needed, or nothing for now to keep fresh state
+        // For MVP, maybe we don't persist active search data to avoid confusion on reload
+      }),
+    },
+  ),
+);
+</file>
+
+<file path="src/types/index.ts">
+export type MallID = "coupang" | "naver" | "elevenst";
+export type RuleType = "coupon" | "point" | "membership";
+export type DiscountType = "percent" | "fixed";
+
+export interface Product {
+  id: string;
+  name: string;
+  imageUrl?: string;
+  category?: string;
+  createdAt: string;
+}
+
+export interface MallPrice {
+  id: string;
+  productId: string;
+  mallName: MallID;
+  basePrice: number;
+  shippingFee: number;
+  productUrl: string;
+  fetchedAt: string;
+}
+
+export interface DiscountRule {
+  id: string;
+  mallName: MallID;
+  ruleType: RuleType;
+  ruleName: string;
+  discountType: DiscountType;
+  discountValue: number;
+  maxDiscount?: number;
+  conditions?: string;
+}
+
+// Client-side types
+export interface AppliedDiscount {
+  ruleId: string;
+  ruleName: string;
+  amount: number; // Calculated discount amount
+}
+
+export interface CalculatedPrice {
+  mallName: MallID;
+  basePrice: number;
+  shippingFee: number;
+  finalPrice: number;
+  appliedDiscounts: AppliedDiscount[];
+  isCheapest: boolean;
+  priceDifference: number; // Difference from cheapest (0 if cheapest)
+}
+
+// API Responses
+export interface SearchResponse {
+  product: Product;
+  prices: MallPrice[];
+}
+
+export interface CalculateRequest {
+  productId: string;
+  selectedRuleIds: Record<MallID, string[]>; // { coupang: ['rule_id_1'], ... }
+}
+
+export interface CalculateResponse {
+  results: CalculatedPrice[];
+  cheapestMall: MallID;
+}
+</file>
+
+<file path="TODO.md">
+# FitLowPrice 개발 TODO
+
+> **프로젝트**: FitLowPrice - 결정 피로 제거 서비스  
+> **버전**: MVP 1.0  
+> **예상 기간**: 4주  
+> **최종 수정**: 2026-01-20
+
+---
+
+## 📋 개요
+
+이 문서는 FitLowPrice MVP 개발을 위한 상세 태스크 체크리스트입니다.
+PRD 기반으로 작성되었으며, Claude Code 에이전트와 협업 시 참조됩니다.
+
+### 진행 상태 범례
+
+| 표시  | 상태                        |
+| :---: | --------------------------- |
+| `[ ]` | 대기 (To Do)                |
+| `[/]` | 진행 중 (In Progress)       |
+| `[x]` | 완료 (Done)                 |
+| `[-]` | 보류/제외 (Blocked/Skipped) |
+
+---
+
+## 🗓️ Phase 1: 기획 및 설계 (Week 1)
+
+### 1.1 프로젝트 초기 설정
+
+- [x] 프로젝트 디렉토리 구조 생성
+  - [x] Next.js 프로젝트 초기화 (`npx create-next-app@latest`)
+  - [x] TypeScript 설정 확인
+  - [x] ESLint + Prettier 설정
+  - [ ] `.gitignore` 구성
+- [x] CLAUDE.md 파일 생성 (프로젝트 컨텍스트)
+- [x] package.json 의존성 정의
+  - [x] 핵심 라이브러리: React, Next.js, TypeScript
+  - [x] UI 라이브러리 선정 (예: shadcn/ui, Radix)
+  - [x] 상태 관리 (Zustand 또는 Jotai)
+  - [x] HTTP 클라이언트 (axios 또는 fetch)
+
+### 1.2 데이터베이스 설계
+
+- [ ] Supabase 프로젝트 생성
+- [x] 테이블 스키마 설계
+  - [x] `products` - 상품 정보
+    ```sql
+    id, name, image_url, category, created_at
+    ```
+  - [x] `mall_prices` - 쇼핑몰별 가격
+    ```sql
+    id, product_id, mall_name, base_price, shipping_fee, product_url, fetched_at
+    ```
+  - [x] `discount_rules` - 할인 규칙
+    ```sql
+    id, mall_name, rule_type, rule_name, discount_type, discount_value, max_discount, conditions
+    ```
+  - [x] `search_logs` - 검색 기록 (선택적)
+    ```sql
+    id, session_id, product_name, searched_at
+    ```
+- [x] Row Level Security (RLS) 정책 설정
+- [x] 초기 할인 규칙 데이터 시딩
+  - [x] 쿠팡 할인 규칙
+  - [x] 네이버 할인 규칙
+  - [x] 11번가 할인 규칙
+
+### 1.3 API 설계
+
+- [x] API 엔드포인트 명세 작성
+  - [x] `POST /api/products/search` - 상품 검색
+  - [ ] `GET /api/products/[id]/prices` - 가격 비교
+  - [x] `POST /api/calculate` - 최종가 계산
+  - [ ] `GET /api/malls` - 쇼핑몰 목록
+  - [ ] `GET /api/malls/[id]/discounts` - 쇼핑몰별 할인 규칙
+
+### 1.4 UI/UX 설계
+
+- [x] 와이어프레임 작성
+  - [x] 메인 페이지 (검색 입력)
+  - [x] 결과 페이지 (가격 비교)
+  - [x] 혜택 선택 모달
+- [x] 디자인 시스템 정의
+  - [x] 컬러 팔레트 (Primary, Secondary, Status)
+  - [x] 타이포그래피 (Font Family, Sizes)
+  - [x] 스페이싱 규칙
+  - [x] 컴포넌트 스타일 가이드
+
+---
+
+## 🖥️ Phase 2: 프론트엔드 개발 (Week 2)
+
+### 2.1 공통 컴포넌트
+
+- [x] Layout 컴포넌트
+  - [x] `Header` - 로고, 네비게이션
+  - [x] `Footer` - 푸터 정보
+  - [x] `Container` - 반응형 컨테이너
+- [x] UI 컴포넌트
+  - [x] `Button` - 기본, 아웃라인, 아이콘 버전
+  - [x] `Input` - 텍스트 입력
+  - [x] `Checkbox` - 체크박스
+  - [x] `Card` - 카드 레이아웃
+  - [x] `Badge` - 상태 뱃지 (최저가, 가격차이)
+  - [x] `Skeleton` - 로딩 스켈레톤
+  - [x] `Toast` - 알림 메시지
+
+### 2.2 메인 페이지 (`/`)
+
+- [x] 검색 섹션 구현
+  - [x] URL 입력 필드
+  - [x] 상품명 직접 입력 옵션
+  - [x] 검색 버튼
+  - [x] URL 유효성 검사 (쿠팡/네이버/11번가)
+- [ ] 최근 검색 기록 표시 (로컬 스토리지)
+- [x] 서비스 소개 섹션
+  - [x] 사용 방법 3단계 안내
+  - [x] 지원 쇼핑몰 로고
+
+### 2.3 가격 비교 페이지 (`/compare/[productId]`)
+
+- [x] 상품 정보 헤더
+  - [x] 상품 이미지
+  - [x] 상품명
+- [x] 쇼핑몰별 가격 카드
+  - [x] 쇼핑몰 로고 + 이름
+  - [x] 기본가
+  - [x] 배송비
+  - [x] 쿠폰/적립금 체크박스 목록
+  - [x] 최종가 표시
+  - [x] 가격차이 뱃지 ("최저가!" / "+3,200원")
+  - [x] "구매하기" 버튼 (외부 링크)
+- [x] 가격 정렬 (최종가 기준 자동)
+- [x] 로딩 상태 처리
+- [x] 에러 상태 처리
+
+### 2.4 반응형 디자인
+
+- [x] 모바일 레이아웃 (320px ~ 767px)
+- [x] 태블릿 레이아웃 (768px ~ 1023px)
+- [x] 데스크톱 레이아웃 (1024px ~)
+
+### 2.5 상태 관리
+
+- [x] 검색 상태 (검색어, 로딩, 에러)
+- [x] 가격 데이터 상태
+- [x] 선택된 혜택 상태 (쇼핑몰별)
+- [x] 계산된 최종가 상태
+
+---
+
+## ⚙️ Phase 3: 백엔드 개발 (Week 3)
+
+### 3.1 가격 수집 모듈
+
+- [/] 쿠팡 가격 수집
+  - [ ] URL에서 상품 ID 추출
+  - [x] 상품 정보 파싱 (이름, 가격, 이미지) (Mock)
+  - [x] 배송비 정보 파싱 (Mock)
+  - [ ] 에러 핸들링 (rate limit, 차단)
+- [/] 네이버 가격 수집
+  - [ ] 네이버 쇼핑 검색 API 활용
+  - [ ] 상품 매칭 로직
+  - [x] 가격 정보 추출 (Mock)
+- [/] 11번가 가격 수집
+  - [ ] URL에서 상품 ID 추출
+  - [x] 상품 정보 파싱 (Mock)
+  - [x] 가격 정보 추출 (Mock)
+- [ ] 수집 결과 캐싱 (1시간 TTL)
+
+### 3.2 상품 검색 API
+
+- [x] `POST /api/products/search` 구현
+  - [x] URL 파싱 → 쇼핑몰 식별
+  - [x] 상품 정보 수집 (Mock)
+  - [x] 타 쇼핑몰 동일 상품 매칭 (Mock)
+  - [x] 응답 포맷 정의
+    ```json
+    {
+      "product": { "id", "name", "image" },
+      "prices": [
+        { "mall", "basePrice", "shippingFee", "url" }
+      ]
+    }
+    ```
+
+### 3.3 가격 계산 API
+
+- [x] `POST /api/calculate` 구현
+  - [x] 요청 파라미터 정의
+    ```json
+    {
+      "productId": "string",
+      "discounts": [
+        { "mall": "coupang", "rules": ["wow_member", "first_purchase"] }
+      ]
+    }
+    ```
+  - [x] 할인 규칙 적용 로직
+    - [x] 퍼센트 할인 계산
+    - [x] 정액 할인 계산
+    - [x] 최대 할인 한도 적용
+    - [x] 복수 할인 중첩 처리
+  - [x] 최종가 계산 및 정렬
+  - [ ] 응답 포맷 정의
+    ```json
+    {
+      "results": [
+        {
+          "mall": "naver",
+          "finalPrice": 323000,
+          "savings": 5000,
+          "breakdown": { ... }
+        }
+      ],
+      "cheapest": "naver"
+    }
+    ```
+
+### 3.4 할인 규칙 API
+
+- [ ] `GET /api/malls` - 쇼핑몰 목록 반환
+- [ ] `GET /api/malls/[id]/discounts` - 할인 규칙 반환
+- [ ] 할인 규칙 데이터 구조
+  ```typescript
+  interface DiscountRule {
+    id: string;
+    mallName: string;
+    ruleType: "coupon" | "point" | "membership";
+    ruleName: string;
+    discountType: "percent" | "fixed";
+    discountValue: number;
+    maxDiscount?: number;
+    conditions?: string;
+  }
+  ```
+
+### 3.5 에러 핸들링 & 로깅
+
+- [ ] API 에러 응답 표준화
+- [ ] 가격 수집 실패 시 fallback 처리
+- [ ] 로깅 미들웨어 구현 (선택적)
+
+---
+
+## 🧪 Phase 4: 테스트 및 배포 (Week 4)
+
+### 4.1 테스트
+
+- [ ] 단위 테스트
+  - [ ] 가격 계산 로직 테스트
+  - [ ] URL 파싱 테스트
+  - [ ] 할인 규칙 적용 테스트
+- [ ] 통합 테스트
+  - [ ] API 엔드포인트 테스트
+  - [ ] 가격 수집 → 계산 플로우 테스트
+- [ ] E2E 테스트 (선택적)
+  - [ ] 전체 사용자 플로우 테스트
+- [ ] 수동 테스트
+  - [ ] 실제 쇼핑몰 URL로 테스트
+  - [ ] 다양한 상품 테스트 (가전, 의류, 식품 등)
+
+### 4.2 성능 최적화
+
+- [ ] 이미지 최적화 (Next.js Image)
+- [ ] API 응답 캐싱
+- [ ] 코드 스플리팅
+- [ ] Lighthouse 점수 확인 (목표: 90+)
+
+### 4.3 배포
+
+- [ ] Vercel 프로젝트 연결
+- [ ] 환경 변수 설정
+  - [ ] `SUPABASE_URL`
+  - [ ] `SUPABASE_ANON_KEY`
+  - [ ] 기타 API 키 (필요시)
+- [ ] 도메인 설정 (선택적)
+- [ ] 프로덕션 배포
+- [ ] 배포 후 스모크 테스트
+
+### 4.4 사용자 테스트
+
+- [ ] 테스트 사용자 5~10명 모집
+- [ ] 테스트 시나리오 작성
+  1. 쿠팡 URL 입력 → 가격 비교
+  2. 쿠폰 선택 → 최종가 확인
+  3. 최저가 쇼핑몰로 이동
+- [ ] 피드백 수집
+- [ ] 주요 이슈 수정
+
+---
+
+## 📊 성공 지표 체크리스트
+
+### 정량 지표
+
+- [ ] 검색 → 쇼핑몰 이동 전환율 50% 이상
+- [ ] API 응답 시간 3초 이내
+- [ ] 에러율 5% 미만
+
+### 정성 지표
+
+- [ ] "여기서 보고 가면 마음이 편하다" 피드백 확인
+- [ ] "귀찮은 거 한 번 줄었다" 피드백 확인
+
+---
+
+## 🚨 리스크 체크리스트
+
+- [ ] 쇼핑몰 가격 수집 차단 대응책 마련
+  - [ ] 캐싱 전략 적용
+  - [ ] 수집 주기 조정 (rate limiting)
+- [ ] 동일 상품 매칭 실패 대응책 마련
+  - [ ] 수동 매핑 fallback
+  - [ ] 사용자에게 "매칭 불가" 안내
+- [ ] 법적 리스크 검토
+  - [ ] 공개 정보만 활용 확인
+
+---
+
+## 📁 프로젝트 구조 (예상)
+
+```
+fitlowprice/
+├── .claude/
+│   └── CLAUDE.md          # Claude 에이전트 컨텍스트
+├── src/
+│   ├── app/
+│   │   ├── page.tsx       # 메인 페이지
+│   │   ├── compare/
+│   │   │   └── [productId]/
+│   │   │       └── page.tsx
+│   │   └── api/
+│   │       ├── products/
+│   │       │   └── search/
+│   │       │       └── route.ts
+│   │       ├── calculate/
+│   │       │   └── route.ts
+│   │       └── malls/
+│   │           └── route.ts
+│   ├── components/
+│   │   ├── ui/            # 기본 UI 컴포넌트
+│   │   ├── layout/        # 레이아웃 컴포넌트
+│   │   └── features/      # 기능별 컴포넌트
+│   ├── lib/
+│   │   ├── supabase.ts    # Supabase 클라이언트
+│   │   ├── scrapers/      # 가격 수집 모듈
+│   │   │   ├── coupang.ts
+│   │   │   ├── naver.ts
+│   │   │   └── elevenst.ts
+│   │   └── calculator.ts  # 가격 계산 로직
+│   ├── types/
+│   │   └── index.ts       # 타입 정의
+│   └── store/
+│       └── index.ts       # 상태 관리
+├── public/
+│   └── images/
+│       └── malls/         # 쇼핑몰 로고
+├── package.json
+├── tsconfig.json
+├── 개발TODO.md            # 이 파일
+└── README.md
+```
+
+---
+
+## 📝 참고 문서
+
+- [PRD_FitLowPrice.md](file:///C:/Users/wntjd/.gemini/antigravity/brain/fb97589e-72c7-48a6-9888-8c3197b4b4d6/PRD_FitLowPrice.md) - 제품 요구사항 문서
+- [Claude Code Memory Best Practices](https://docs.anthropic.com/en/docs/claude-code/memory) - CLAUDE.md 작성 가이드
+
+---
+
+## 변경 이력
+
+|    날짜    | 변경 내용 |
+| :--------: | --------- |
+| 2026-01-20 | 초안 작성 |
+</file>
+
+<file path="tsconfig.json">
+{
+  "compilerOptions": {
+    "target": "ES2017",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "react-jsx",
+    "incremental": true,
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "paths": {
+      "@/*": ["./src/*"]
+    }
+  },
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    ".next/dev/types/**/*.ts",
+    "**/*.mts"
+  ],
+  "exclude": ["node_modules"]
+}
+</file>
+
+<file path=".gitignore">
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+/node_modules
+/.pnp
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
+
+# testing
+/coverage
+
+# next.js
+/.next/
+/out/
+
+# production
+/build
+
+# misc
+.DS_Store
+*.pem
+
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# env files (can opt-in for committing if needed)
+.env*
+
+# vercel
+.vercel
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
+
+/src/generated/prisma
+</file>
+
+<file path="next.config.ts">
+import type { NextConfig } from "next";
+
+const nextConfig: NextConfig = {
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "dummyimage.com",
+      },
+      {
+        protocol: "https",
+        hostname: "upload.wikimedia.org",
+      },
+      // In production, you would add actual image domains here (e.g., static.coupangcdn.com)
+    ],
+  },
+};
+
+export default nextConfig;
+</file>
+
+<file path="package.json">
+{
+  "name": "init_temp",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint"
+  },
+  "dependencies": {
+    "@libsql/client": "^0.17.0",
+    "@prisma/adapter-libsql": "^7.2.0",
+    "@prisma/client": "^5.22.0",
+    "@radix-ui/react-checkbox": "^1.3.3",
+    "@radix-ui/react-label": "^2.1.8",
+    "@radix-ui/react-slot": "^1.2.4",
+    "axios": "^1.13.2",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "lucide-react": "^0.562.0",
+    "next": "16.1.4",
+    "next-themes": "^0.4.6",
+    "prisma": "^5.22.0",
+    "react": "19.2.3",
+    "react-dom": "19.2.3",
+    "sonner": "^2.0.7",
+    "tailwind-merge": "^3.4.0",
+    "zustand": "^5.0.10"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "16.1.4",
+    "tailwindcss": "^4",
+    "tw-animate-css": "^1.4.0",
+    "typescript": "^5"
+  }
+}
+</file>
+
+<file path="src/app/api/products/search/route.ts">
+import { NextResponse } from "next/server";
+import { CoupangScraper } from "@/lib/scrapers/coupang";
+import { NaverScraper } from "@/lib/scrapers/naver";
+import { ElevenStScraper } from "@/lib/scrapers/elevenst";
+import { SearchResultItem } from "@/lib/scrapers/types";
+
+interface KeywordSearchResponse {
+  keyword: string;
+  results: {
+    coupang: SearchResultItem[];
+    naver: SearchResultItem[];
+    elevenst: SearchResultItem[];
+  };
+  totalCount: number;
+  searchedAt: string;
+}
+
+export async function POST(request: Request) {
+  try {
+    const { query } = await request.json();
+
+    if (!query || typeof query !== "string") {
+      return NextResponse.json(
+        { error: "검색어를 입력해주세요." },
+        { status: 400 },
+      );
+    }
+
+    const keyword = query.trim();
+
+    if (keyword.length < 2) {
+      return NextResponse.json(
+        { error: "검색어는 2글자 이상 입력해주세요." },
+        { status: 400 },
+      );
+    }
+
+    // 각 쇼핑몰 검색을 병렬로 실행
+    const [coupangResults, naverResults, elevenstResults] = await Promise.all([
+      CoupangScraper.search(keyword),
+      NaverScraper.search(keyword),
+      ElevenStScraper.search(keyword),
+    ]);
+
+    const response: KeywordSearchResponse = {
+      keyword,
+      results: {
+        coupang: coupangResults,
+        naver: naverResults,
+        elevenst: elevenstResults,
+      },
+      totalCount:
+        coupangResults.length + naverResults.length + elevenstResults.length,
+      searchedAt: new Date().toISOString(),
+    };
+
+    return NextResponse.json(response);
+  } catch (error) {
+    console.error("Search API Error:", error);
+    return NextResponse.json(
+      { error: "검색 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요." },
+      { status: 500 },
+    );
+  }
+}
+</file>
+
+<file path="src/app/globals.css">
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+  --radius-3xl: calc(var(--radius) + 12px);
+  --radius-4xl: calc(var(--radius) + 16px);
+}
+
+:root {
+  --radius: 0.625rem;
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.145 0 0);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.145 0 0);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.145 0 0);
+  --primary: oklch(0.205 0 0);
+  --primary-foreground: oklch(0.985 0 0);
+  --secondary: oklch(0.97 0 0);
+  --secondary-foreground: oklch(0.205 0 0);
+  --muted: oklch(0.97 0 0);
+  --muted-foreground: oklch(0.556 0 0);
+  --accent: oklch(0.97 0 0);
+  --accent-foreground: oklch(0.205 0 0);
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: oklch(0.922 0 0);
+  --input: oklch(0.922 0 0);
+  --ring: oklch(0.708 0 0);
+  --chart-1: oklch(0.646 0.222 41.116);
+  --chart-2: oklch(0.6 0.118 184.704);
+  --chart-3: oklch(0.398 0.07 227.392);
+  --chart-4: oklch(0.828 0.189 84.429);
+  --chart-5: oklch(0.769 0.188 70.08);
+  --sidebar: oklch(0.985 0 0);
+  --sidebar-foreground: oklch(0.145 0 0);
+  --sidebar-primary: oklch(0.205 0 0);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.97 0 0);
+  --sidebar-accent-foreground: oklch(0.205 0 0);
+  --sidebar-border: oklch(0.922 0 0);
+  --sidebar-ring: oklch(0.708 0 0);
+}
+
+.dark {
+  --background: oklch(0.145 0 0);
+  --foreground: oklch(0.985 0 0);
+  --card: oklch(0.205 0 0);
+  --card-foreground: oklch(0.985 0 0);
+  --popover: oklch(0.205 0 0);
+  --popover-foreground: oklch(0.985 0 0);
+  --primary: oklch(0.922 0 0);
+  --primary-foreground: oklch(0.205 0 0);
+  --secondary: oklch(0.269 0 0);
+  --secondary-foreground: oklch(0.985 0 0);
+  --muted: oklch(0.269 0 0);
+  --muted-foreground: oklch(0.708 0 0);
+  --accent: oklch(0.269 0 0);
+  --accent-foreground: oklch(0.985 0 0);
+  --destructive: oklch(0.704 0.191 22.216);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 15%);
+  --ring: oklch(0.556 0 0);
+  --chart-1: oklch(0.488 0.243 264.376);
+  --chart-2: oklch(0.696 0.17 162.48);
+  --chart-3: oklch(0.769 0.188 70.08);
+  --chart-4: oklch(0.627 0.265 303.9);
+  --chart-5: oklch(0.645 0.246 16.439);
+  --sidebar: oklch(0.205 0 0);
+  --sidebar-foreground: oklch(0.985 0 0);
+  --sidebar-primary: oklch(0.488 0.243 264.376);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.269 0 0);
+  --sidebar-accent-foreground: oklch(0.985 0 0);
+  --sidebar-border: oklch(1 0 0 / 10%);
+  --sidebar-ring: oklch(0.556 0 0);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+</file>
+
+<file path="src/app/layout.tsx">
+import type { Metadata } from "next";
+import { Inter } from "next/font/google";
+import "./globals.css";
+import { Header } from "@/components/layout/Header";
+import { Footer } from "@/components/layout/Footer";
+import { Toaster } from "@/components/ui/sonner";
+
+const inter = Inter({ subsets: ["latin"] });
+
+export const metadata: Metadata = {
+  title: "FitLowPrice - 결정 피로 제거 서비스",
+  description: "내 계정 기준으로 어디가 가장 싼지 한 번에 비교하세요.",
+};
+
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
+  return (
+    <html lang="ko">
+      <body className={inter.className}>
+        <div className="relative flex min-h-screen flex-col">
+          <Header />
+          <main className="flex-1">{children}</main>
+          <Footer />
+        </div>
+        <Toaster />
+      </body>
+    </html>
+  );
+}
+</file>
+
+<file path="src/app/page.tsx">
+import SearchSection from "@/components/features/SearchSection";
+
+export default function Home() {
+  return (
+    <div className="container flex flex-col items-center justify-center min-h-[calc(100vh-140px)] py-12 gap-12">
+      <SearchSection />
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full max-w-5xl">
+        <div className="space-y-2 text-center">
+          <div className="flex items-center justify-center w-12 h-12 mx-auto rounded-full bg-primary/10 text-primary font-bold text-xl">
+            1
+          </div>
+          <h3 className="font-bold text-lg">링크 붙여넣기</h3>
+          <p className="text-muted-foreground text-sm">
+            사고 싶은 상품의 URL이나
+            <br />
+            이름을 입력하세요.
+          </p>
+        </div>
+        <div className="space-y-2 text-center">
+          <div className="flex items-center justify-center w-12 h-12 mx-auto rounded-full bg-primary/10 text-primary font-bold text-xl">
+            2
+          </div>
+          <h3 className="font-bold text-lg">혜택 선택하기</h3>
+          <p className="text-muted-foreground text-sm">
+            내가 가진 멤버십, 쿠폰을
+            <br />
+            선택하세요. (로그인 X)
+          </p>
+        </div>
+        <div className="space-y-2 text-center">
+          <div className="flex items-center justify-center w-12 h-12 mx-auto rounded-full bg-primary/10 text-primary font-bold text-xl">
+            3
+          </div>
+          <h3 className="font-bold text-lg">진짜 최저가 확인</h3>
+          <p className="text-muted-foreground text-sm">
+            모든 혜택이 적용된
+            <br />
+            최종 가격을 확인하세요.
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}
+</file>
+
+<file path="src/components/features/SearchSection.tsx">
+"use client";
+
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useAppStore } from "@/store";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Search, Loader2 } from "lucide-react";
+import { toast } from "sonner";
+
+export default function SearchSection() {
+  const router = useRouter();
+  const [input, setInput] = useState("");
+  const { isLoading, setSearchQuery } = useAppStore();
+
+  const handleSearch = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!input.trim()) {
+      toast.error("검색할 상품명을 입력해주세요.");
+      return;
+    }
+
+    if (input.trim().length < 2) {
+      toast.error("검색어는 2글자 이상 입력해주세요.");
+      return;
+    }
+
+    setSearchQuery(input);
+    // Navigate to search results page
+    router.push(`/search?q=${encodeURIComponent(input.trim())}`);
+  };
+
+  return (
+    <section className="w-full max-w-3xl mx-auto space-y-8 text-center">
+      <div className="space-y-4">
+        <h1 className="text-4xl font-extrabold tracking-tight lg:text-5xl">
+          결정 피로, <span className="text-primary">그만.</span>
+        </h1>
+        <p className="text-xl text-muted-foreground">
+          상품명만 검색하세요. 쿠폰, 적립금까지 다 계산해서
+          <br className="hidden sm:inline" />내 계정 기준 진짜 최저가를
+          찾아드립니다.
+        </p>
+      </div>
+
+      <div className="p-6 bg-card rounded-xl border shadow-sm">
+        <form
+          onSubmit={handleSearch}
+          className="flex flex-col sm:flex-row gap-4"
+        >
+          <Input
+            placeholder="검색할 상품명을 입력하세요 (예: 신라면, 에어팟)"
+            className="flex-1 h-12 text-lg"
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            disabled={isLoading}
+          />
+          <Button
+            type="submit"
+            size="lg"
+            className="h-12 px-8 text-lg"
+            disabled={isLoading}
+          >
+            {isLoading ? (
+              <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+            ) : (
+              <Search className="mr-2 h-5 w-5" />
+            )}
+            최저가 찾기
+          </Button>
+        </form>
+        <div className="mt-4 flex flex-wrap justify-center gap-2 text-sm text-muted-foreground">
+          <span>지원 쇼핑몰:</span>
+          <span className="font-medium text-foreground">쿠팡</span>
+          <span className="text-muted-foreground/40">•</span>
+          <span className="font-medium text-foreground">네이버</span>
+          <span className="text-muted-foreground/40">•</span>
+          <span className="font-medium text-foreground">11번가</span>
+        </div>
+      </div>
+    </section>
+  );
+}
+</file>
+
+<file path="src/lib/scrapers/coupang.ts">
+import { MallScraper, ScraperResult, SearchResultItem } from "./types";
+
+const COUPANG_SEARCH_URL = "https://www.coupang.com/np/search";
+const USER_AGENT =
+  "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36";
+
+/**
+ * 쿠팡 검색 결과 파싱을 위한 유틸리티 함수
+ */
+function parsePrice(priceText: string): number {
+  return parseInt(priceText.replace(/[^0-9]/g, ""), 10) || 0;
+}
+
+function extractProductId(url: string): string | null {
+  const match = url.match(/products\/(\d+)/);
+  return match ? match[1] : null;
+}
+
+export const CoupangScraper: MallScraper = {
+  name: "coupang",
+
+  matchUrl(url: string) {
+    return url.includes("coupang.com");
+  },
+
+  async scrape(url: string): Promise<ScraperResult> {
+    console.log(`Scraping Coupang: ${url}`);
+
+    // TODO: 단일 상품 상세 페이지 크롤링 구현
+    return {
+      success: true,
+      product: {
+        name: "Mock Product from Coupang",
+        imageUrl: "https://dummyimage.com/400x400/orange/white&text=Coupang",
+      },
+      price: {
+        mallName: "coupang",
+        basePrice: 10000,
+        shippingFee: 0,
+        productUrl: url,
+      },
+    };
+  },
+
+  /**
+   * 쿠팡 검색 API를 통한 상품 검색
+   * 쿠팡은 공식 API가 없으므로 검색 페이지 HTML을 파싱합니다.
+   * 개발 환경에서 차단될 경우 Mock 데이터를 반환합니다.
+   */
+  async search(keyword: string): Promise<SearchResultItem[]> {
+    try {
+      const encodedKeyword = encodeURIComponent(keyword);
+      const searchUrl = `${COUPANG_SEARCH_URL}?q=${encodedKeyword}&channel=user`;
+
+      const response = await fetch(searchUrl, {
+        headers: {
+          "User-Agent": USER_AGENT,
+          Accept:
+            "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
+          "Accept-Language": "ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7",
+          "Cache-Control": "no-cache",
+          Pragma: "no-cache",
+        },
+      });
+
+      if (!response.ok) {
+        console.error(`Coupang search failed: ${response.status}`);
+        // 개발 환경에서 차단 시 Mock 데이터 반환
+        if (process.env.NODE_ENV === "development") {
+          return getMockCoupangResults(keyword);
+        }
+        return [];
+      }
+
+      const html = await response.text();
+      const results = parseCoupangSearchResults(html);
+
+      // 파싱 결과가 없으면 Mock 데이터 반환 (개발 환경)
+      if (results.length === 0 && process.env.NODE_ENV === "development") {
+        return getMockCoupangResults(keyword);
+      }
+
+      return results;
+    } catch (error) {
+      console.error("Coupang search error:", error);
+      // 개발 환경에서 에러 시 Mock 데이터 반환
+      if (process.env.NODE_ENV === "development") {
+        return getMockCoupangResults(keyword);
+      }
+      return [];
+    }
+  },
+};
+
+/**
+ * 쿠팡 검색 결과 HTML 파싱
+ *
+ * 쿠팡 검색 결과 HTML 구조 (2026년 1월 기준):
+ * - ul#productList > li.search-product (각 상품)
+ *   - a.search-product-link (상품 링크)
+ *   - img.search-product-wrap-img (이미지)
+ *   - div.name (상품명)
+ *   - strong.price-value (가격)
+ *   - span.base-price (원가 - 할인 시)
+ *   - span.rocket-icon (로켓배송 아이콘)
+ *   - em.rating (평점)
+ *   - span.rating-total-count (리뷰 수)
+ */
+function parseCoupangSearchResults(html: string): SearchResultItem[] {
+  const results: SearchResultItem[] = [];
+
+  // Regex 기반 파싱 (서버 환경에서 DOM 파서 없이 동작)
+  // 상품 블록 추출: <li class="search-product" ...> ~ </li>
+  const productRegex =
+    /<li[^>]*class="[^"]*search-product[^"]*"[^>]*>([\s\S]*?)<\/li>/gi;
+  const productMatches = html.matchAll(productRegex);
+
+  for (const match of productMatches) {
+    const productHtml = match[1];
+
+    // 상품 링크 추출
+    const linkMatch = productHtml.match(
+      /<a[^>]*href="([^"]*)"[^>]*class="[^"]*search-product-link[^"]*"/i,
+    );
+    if (!linkMatch) continue;
+    const productUrl = `https://www.coupang.com${linkMatch[1]}`;
+
+    // 상품명 추출
+    const nameMatch = productHtml.match(
+      /<div[^>]*class="[^"]*name[^"]*"[^>]*>([\s\S]*?)<\/div>/i,
+    );
+    const productName = nameMatch
+      ? nameMatch[1].replace(/<[^>]+>/g, "").trim()
+      : "";
+
+    // 가격 추출
+    const priceMatch = productHtml.match(
+      /<strong[^>]*class="[^"]*price-value[^"]*"[^>]*>([\s\S]*?)<\/strong>/i,
+    );
+    const price = priceMatch ? parsePrice(priceMatch[1]) : 0;
+
+    // 원가 추출 (할인 상품인 경우)
+    const originalPriceMatch = productHtml.match(
+      /<span[^>]*class="[^"]*base-price[^"]*"[^>]*>([\s\S]*?)<\/span>/i,
+    );
+    const originalPrice = originalPriceMatch
+      ? parsePrice(originalPriceMatch[1])
+      : undefined;
+
+    // 이미지 추출
+    const imageMatch = productHtml.match(
+      /<img[^>]*(?:data-img-src|src)="([^"]+)"[^>]*class="[^"]*search-product-wrap-img[^"]*"/i,
+    );
+    const imageUrl = imageMatch ? imageMatch[1] : "";
+
+    // 로켓배송 여부
+    const isRocketDelivery = /rocket-icon|rocket_logo|로켓배송/i.test(
+      productHtml,
+    );
+
+    // 무료배송 여부
+    const isFreeShipping = /free-shipping|무료배송/i.test(productHtml);
+
+    // 평점 추출
+    const ratingMatch = productHtml.match(
+      /<em[^>]*class="[^"]*rating[^"]*"[^>]*>([\d.]+)<\/em>/i,
+    );
+    const rating = ratingMatch ? parseFloat(ratingMatch[1]) : undefined;
+
+    // 리뷰 수 추출
+    const reviewMatch = productHtml.match(
+      /<span[^>]*class="[^"]*rating-total-count[^"]*"[^>]*>\((\d+)\)<\/span>/i,
+    );
+    const reviewCount = reviewMatch ? parseInt(reviewMatch[1], 10) : undefined;
+
+    // 유효한 데이터만 추가
+    if (productName && price > 0) {
+      results.push({
+        productName,
+        price,
+        originalPrice,
+        imageUrl: imageUrl.startsWith("//") ? `https:${imageUrl}` : imageUrl,
+        productUrl,
+        mallName: "coupang",
+        isRocketDelivery,
+        isFreeShipping,
+        rating,
+        reviewCount,
+      });
+    }
+
+    // 상위 5개만 반환 (MVP)
+    if (results.length >= 5) break;
+  }
+
+  return results;
+}
+
+export { extractProductId };
+
+/**
+ * 개발 환경용 Mock 데이터 생성 함수
+ * 쿠팡 크롤링이 차단될 경우 테스트용 데이터를 반환합니다.
+ */
+function getMockCoupangResults(keyword: string): SearchResultItem[] {
+  return [
+    {
+      productName: `[쿠팡] ${keyword} 추천 상품 1`,
+      price: 29900,
+      originalPrice: 39900,
+      imageUrl: "https://placehold.co/300x300/FF6600/FFFFFF?text=Coupang",
+      productUrl: `https://www.coupang.com/np/search?q=${encodeURIComponent(keyword)}`,
+      mallName: "coupang",
+      isRocketDelivery: true,
+      isFreeShipping: true,
+      rating: 4.8,
+      reviewCount: 1523,
+    },
+    {
+      productName: `[쿠팡] ${keyword} 인기 상품 2`,
+      price: 35000,
+      originalPrice: 45000,
+      imageUrl: "https://placehold.co/300x300/FF6600/FFFFFF?text=Coupang",
+      productUrl: `https://www.coupang.com/np/search?q=${encodeURIComponent(keyword)}`,
+      mallName: "coupang",
+      isRocketDelivery: true,
+      isFreeShipping: true,
+      rating: 4.5,
+      reviewCount: 892,
+    },
+    {
+      productName: `[쿠팡] ${keyword} 베스트 상품 3`,
+      price: 42500,
+      imageUrl: "https://placehold.co/300x300/FF6600/FFFFFF?text=Coupang",
+      productUrl: `https://www.coupang.com/np/search?q=${encodeURIComponent(keyword)}`,
+      mallName: "coupang",
+      isRocketDelivery: false,
+      isFreeShipping: false,
+      rating: 4.3,
+      reviewCount: 456,
+    },
+  ];
+}
+</file>
+
+<file path="src/lib/scrapers/elevenst.ts">
+import { MallScraper, ScraperResult, SearchResultItem } from "./types";
+
+const ELEVENST_SEARCH_URL = "https://search.11st.co.kr/Search.tmall";
+const USER_AGENT =
+  "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36";
+
+/**
+ * 가격 문자열을 숫자로 파싱
+ */
+function parsePrice(priceText: string): number {
+  return parseInt(priceText.replace(/[^0-9]/g, ""), 10) || 0;
+}
+
+export const ElevenStScraper: MallScraper = {
+  name: "elevenst",
+
+  matchUrl(url: string) {
+    return url.includes("11st.co.kr");
+  },
+
+  async scrape(url: string): Promise<ScraperResult> {
+    console.log(`Scraping 11st: ${url}`);
+
+    return {
+      success: true,
+      product: {
+        name: "Mock Product from 11st",
+        imageUrl: "https://dummyimage.com/400x400/red/white&text=11st",
+      },
+      price: {
+        mallName: "elevenst",
+        basePrice: 11000,
+        shippingFee: 0,
+        productUrl: url,
+      },
+    };
+  },
+
+  /**
+   * 11번가 검색 API를 통한 상품 검색
+   * 11번가는 공식 API가 없으므로 검색 페이지 HTML을 파싱합니다.
+   * 개발 환경에서 차단될 경우 Mock 데이터를 반환합니다.
+   */
+  async search(keyword: string): Promise<SearchResultItem[]> {
+    try {
+      const encodedKeyword = encodeURIComponent(keyword);
+      const searchUrl = `${ELEVENST_SEARCH_URL}?kwd=${encodedKeyword}`;
+
+      const response = await fetch(searchUrl, {
+        headers: {
+          "User-Agent": USER_AGENT,
+          Accept:
+            "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
+          "Accept-Language": "ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7",
+          "Cache-Control": "no-cache",
+          Pragma: "no-cache",
+        },
+      });
+
+      if (!response.ok) {
+        console.error(`11st search failed: ${response.status}`);
+        if (process.env.NODE_ENV === "development") {
+          return getMock11stResults(keyword);
+        }
+        return [];
+      }
+
+      const html = await response.text();
+      const results = parse11stSearchResults(html);
+
+      if (results.length === 0 && process.env.NODE_ENV === "development") {
+        return getMock11stResults(keyword);
+      }
+
+      return results;
+    } catch (error) {
+      console.error("11st search error:", error);
+      if (process.env.NODE_ENV === "development") {
+        return getMock11stResults(keyword);
+      }
+      return [];
+    }
+  },
+};
+
+/**
+ * 11번가 검색 결과 HTML 파싱
+ *
+ * 11번가 검색 결과 HTML 구조 (2026년 1월 기준):
+ * - ul.c_product_list > li.c_product_item (각 상품)
+ *   - a 태그 (상품 링크)
+ *   - img.c_product_img (이미지)
+ *   - div.c_prd_name (상품명)
+ *   - span.c_prd_price > strong (가격)
+ *   - del.c_prd_org_price (원가)
+ *   - span.c_prd_delivery (배송 정보)
+ *   - span.c_prd_review_count (리뷰 수)
+ *
+ * 또는 새로운 UI:
+ * - div.list_product_item (각 상품)
+ *   - a.product_link (상품 링크)
+ *   - img (이미지)
+ *   - .product_name (상품명)
+ *   - .product_price (가격)
+ */
+function parse11stSearchResults(html: string): SearchResultItem[] {
+  const results: SearchResultItem[] = [];
+
+  // 패턴 1: 기존 UI (c_product_item)
+  const pattern1Regex =
+    /<li[^>]*class="[^"]*c_product_item[^"]*"[^>]*>([\s\S]*?)<\/li>/gi;
+  // 패턴 2: 새 UI (list_product_item)
+  const pattern2Regex =
+    /<div[^>]*class="[^"]*list_product_item[^"]*"[^>]*>([\s\S]*?)<\/div>\s*<\/div>\s*<\/div>/gi;
+  // 패턴 3: 또 다른 UI (상품 카드)
+  const pattern3Regex =
+    /<div[^>]*class="[^"]*box_pd[^"]*"[^>]*>([\s\S]*?)<\/div>\s*<\/div>/gi;
+
+  // 모든 패턴 시도
+  let productMatches = [...html.matchAll(pattern1Regex)];
+  if (productMatches.length === 0) {
+    productMatches = [...html.matchAll(pattern2Regex)];
+  }
+  if (productMatches.length === 0) {
+    productMatches = [...html.matchAll(pattern3Regex)];
+  }
+
+  for (const match of productMatches) {
+    const productHtml = match[1];
+
+    // 상품 링크 추출 (여러 패턴 시도)
+    let productUrl = "";
+    const linkPatterns = [
+      /href="(https?:\/\/[^"]*11st\.co\.kr[^"]*)"/i,
+      /href="(\/products\/[^"]*)"/i,
+      /data-url="([^"]*)"/i,
+    ];
+
+    for (const pattern of linkPatterns) {
+      const linkMatch = productHtml.match(pattern);
+      if (linkMatch) {
+        productUrl = linkMatch[1].startsWith("http")
+          ? linkMatch[1]
+          : `https://www.11st.co.kr${linkMatch[1]}`;
+        break;
+      }
+    }
+
+    if (!productUrl) continue;
+
+    // 상품명 추출 (여러 패턴 시도)
+    let productName = "";
+    const namePatterns = [
+      /<div[^>]*class="[^"]*c_prd_name[^"]*"[^>]*>([\s\S]*?)<\/div>/i,
+      /<p[^>]*class="[^"]*product_name[^"]*"[^>]*>([\s\S]*?)<\/p>/i,
+      /<a[^>]*class="[^"]*name[^"]*"[^>]*>([\s\S]*?)<\/a>/i,
+      /title="([^"]+)"/i,
+    ];
+
+    for (const pattern of namePatterns) {
+      const nameMatch = productHtml.match(pattern);
+      if (nameMatch) {
+        productName = nameMatch[1].replace(/<[^>]+>/g, "").trim();
+        if (productName) break;
+      }
+    }
+
+    // 가격 추출 (여러 패턴 시도)
+    let price = 0;
+    const pricePatterns = [
+      /<strong[^>]*class="[^"]*sale_price[^"]*"[^>]*>([\s\S]*?)<\/strong>/i,
+      /<span[^>]*class="[^"]*c_prd_price[^"]*"[^>]*>[\s\S]*?<strong>([\s\S]*?)<\/strong>/i,
+      /<em[^>]*class="[^"]*price[^"]*"[^>]*>([\s\S]*?)<\/em>/i,
+      /(\d{1,3}(?:,\d{3})+)원/,
+    ];
+
+    for (const pattern of pricePatterns) {
+      const priceMatch = productHtml.match(pattern);
+      if (priceMatch) {
+        price = parsePrice(priceMatch[1]);
+        if (price > 0) break;
+      }
+    }
+
+    // 원가 추출
+    const originalPriceMatch = productHtml.match(
+      /<del[^>]*class="[^"]*c_prd_org_price[^"]*"[^>]*>([\s\S]*?)<\/del>/i,
+    );
+    const originalPrice = originalPriceMatch
+      ? parsePrice(originalPriceMatch[1])
+      : undefined;
+
+    // 이미지 추출
+    let imageUrl = "";
+    const imagePatterns = [
+      /<img[^>]*(?:data-original|data-src|src)="([^"]+)"[^>]*>/i,
+      /data-original="([^"]+)"/i,
+    ];
+
+    for (const pattern of imagePatterns) {
+      const imageMatch = productHtml.match(pattern);
+      if (imageMatch) {
+        imageUrl = imageMatch[1];
+        break;
+      }
+    }
+
+    // 무료배송 여부
+    const isFreeShipping = /무료배송|free/i.test(productHtml);
+
+    // 리뷰 수 추출
+    const reviewMatch = productHtml.match(/(?:리뷰|후기)\s*(\d+(?:,\d+)*)/i);
+    const reviewCount = reviewMatch
+      ? parseInt(reviewMatch[1].replace(/,/g, ""), 10)
+      : undefined;
+
+    // 유효한 데이터만 추가
+    if (productName && price > 0) {
+      results.push({
+        productName,
+        price,
+        originalPrice,
+        imageUrl: imageUrl.startsWith("//") ? `https:${imageUrl}` : imageUrl,
+        productUrl,
+        mallName: "elevenst",
+        isFreeShipping,
+        reviewCount,
+      });
+    }
+
+    // 상위 5개만 반환 (MVP)
+    if (results.length >= 5) break;
+  }
+
+  return results;
+}
+
+/**
+ * 개발 환경용 Mock 데이터 생성 함수
+ * 11번가 크롤링이 차단될 경우 테스트용 데이터를 반환합니다.
+ */
+function getMock11stResults(keyword: string): SearchResultItem[] {
+  return [
+    {
+      productName: `[11번가] ${keyword} 특가 상품 1`,
+      price: 26500,
+      originalPrice: 32000,
+      imageUrl: "https://placehold.co/300x300/E91E63/FFFFFF?text=11st",
+      productUrl: `https://search.11st.co.kr/Search.tmall?kwd=${encodeURIComponent(keyword)}`,
+      mallName: "elevenst",
+      isFreeShipping: true,
+      reviewCount: 234,
+    },
+    {
+      productName: `[11번가] ${keyword} 할인 상품 2`,
+      price: 31000,
+      imageUrl: "https://placehold.co/300x300/E91E63/FFFFFF?text=11st",
+      productUrl: `https://search.11st.co.kr/Search.tmall?kwd=${encodeURIComponent(keyword)}`,
+      mallName: "elevenst",
+      isFreeShipping: false,
+      reviewCount: 156,
+    },
+    {
+      productName: `[11번가] ${keyword} 인기 상품 3`,
+      price: 39900,
+      originalPrice: 49900,
+      imageUrl: "https://placehold.co/300x300/E91E63/FFFFFF?text=11st",
+      productUrl: `https://search.11st.co.kr/Search.tmall?kwd=${encodeURIComponent(keyword)}`,
+      mallName: "elevenst",
+      isFreeShipping: true,
+      reviewCount: 789,
+    },
+  ];
+}
+</file>
+
+<file path="src/lib/scrapers/naver.ts">
+import { MallScraper, ScraperResult, SearchResultItem } from "./types";
+
+const NAVER_SHOPPING_API_URL = "https://openapi.naver.com/v1/search/shop.json";
+
+export const NaverScraper: MallScraper = {
+  name: "naver",
+
+  matchUrl(url: string) {
+    return (
+      url.includes("smartstore.naver.com") || url.includes("brand.naver.com")
+    );
+  },
+
+  async scrape(url: string): Promise<ScraperResult> {
+    console.log(`Scraping Naver: ${url}`);
+
+    return {
+      success: true,
+      product: {
+        name: "Mock Product from Naver",
+        imageUrl: "https://dummyimage.com/400x400/green/white&text=Naver",
+      },
+      price: {
+        mallName: "naver",
+        basePrice: 10500,
+        shippingFee: 3000,
+        productUrl: url,
+      },
+    };
+  },
+
+  /**
+   * 네이버 쇼핑 검색 API를 통한 상품 검색
+   * 공식 API를 사용하므로 가장 안정적입니다.
+   * 개발 환경에서 API 키가 없거나 실패 시 Mock 데이터를 반환합니다.
+   *
+   * 환경변수 필요:
+   * - NAVER_CLIENT_ID: 네이버 개발자 센터에서 발급받은 Client ID
+   * - NAVER_CLIENT_SECRET: 네이버 개발자 센터에서 발급받은 Client Secret
+   *
+   * @see https://developers.naver.com/docs/serviceapi/search/shopping/shopping.md
+   */
+  async search(keyword: string): Promise<SearchResultItem[]> {
+    const clientId = process.env.NAVER_CLIENT_ID;
+    const clientSecret = process.env.NAVER_CLIENT_SECRET;
+
+    // API 키가 없거나 placeholder면 Mock 데이터 반환
+    if (!clientId || !clientSecret || clientId.includes("your-")) {
+      console.warn(
+        "Naver API credentials not found. Using mock data for development.",
+      );
+      if (process.env.NODE_ENV === "development") {
+        return getMockNaverResults(keyword);
+      }
+      return [];
+    }
+
+    try {
+      const encodedKeyword = encodeURIComponent(keyword);
+      const apiUrl = `${NAVER_SHOPPING_API_URL}?query=${encodedKeyword}&display=5&sort=sim`;
+
+      const response = await fetch(apiUrl, {
+        headers: {
+          "X-Naver-Client-Id": clientId,
+          "X-Naver-Client-Secret": clientSecret,
+        },
+      });
+
+      if (!response.ok) {
+        console.error(`Naver API failed: ${response.status}`);
+        if (process.env.NODE_ENV === "development") {
+          return getMockNaverResults(keyword);
+        }
+        return [];
+      }
+
+      const data = await response.json();
+      const results = parseNaverApiResponse(data);
+
+      if (results.length === 0 && process.env.NODE_ENV === "development") {
+        return getMockNaverResults(keyword);
+      }
+
+      return results;
+    } catch (error) {
+      console.error("Naver search error:", error);
+      if (process.env.NODE_ENV === "development") {
+        return getMockNaverResults(keyword);
+      }
+      return [];
+    }
+  },
+};
+
+/**
+ * 네이버 쇼핑 API 응답 파싱
+ *
+ * API 응답 구조:
+ * {
+ *   "items": [
+ *     {
+ *       "title": "상품명 <b>키워드</b>",
+ *       "link": "상품 URL",
+ *       "image": "이미지 URL",
+ *       "lprice": "최저가 (문자열)",
+ *       "hprice": "최고가 (문자열, 비어있을 수 있음)",
+ *       "mallName": "판매처 이름",
+ *       "productId": "상품 ID",
+ *       "productType": "상품 타입 (1: 일반, 2: 가격비교, 3: 카탈로그)"
+ *     }
+ *   ]
+ * }
+ */
+interface NaverShoppingItem {
+  title: string;
+  link: string;
+  image: string;
+  lprice: string;
+  hprice: string;
+  mallName: string;
+  productId: string;
+  productType: string;
+}
+
+interface NaverApiResponse {
+  items: NaverShoppingItem[];
+  total: number;
+  start: number;
+  display: number;
+}
+
+function parseNaverApiResponse(data: NaverApiResponse): SearchResultItem[] {
+  if (!data.items || !Array.isArray(data.items)) {
+    return [];
+  }
+
+  return data.items.map((item) => ({
+    productName: item.title.replace(/<\/?b>/g, ""), // HTML 태그 제거
+    price: parseInt(item.lprice, 10) || 0,
+    originalPrice: item.hprice ? parseInt(item.hprice, 10) : undefined,
+    imageUrl: item.image || "",
+    productUrl: item.link || "",
+    mallName: "naver" as const,
+    isFreeShipping: undefined, // API에서 제공하지 않음
+  }));
+}
+
+/**
+ * 개발 환경용 Mock 데이터 생성 함수
+ * 네이버 API 키가 없을 경우 테스트용 데이터를 반환합니다.
+ */
+function getMockNaverResults(keyword: string): SearchResultItem[] {
+  return [
+    {
+      productName: `[네이버] ${keyword} 인기 상품 1`,
+      price: 27500,
+      originalPrice: 35000,
+      imageUrl: "https://placehold.co/300x300/00C73C/FFFFFF?text=Naver",
+      productUrl: `https://search.shopping.naver.com/search/all?query=${encodeURIComponent(keyword)}`,
+      mallName: "naver",
+      isFreeShipping: true,
+    },
+    {
+      productName: `[네이버] ${keyword} 추천 상품 2`,
+      price: 32000,
+      imageUrl: "https://placehold.co/300x300/00C73C/FFFFFF?text=Naver",
+      productUrl: `https://search.shopping.naver.com/search/all?query=${encodeURIComponent(keyword)}`,
+      mallName: "naver",
+      isFreeShipping: true,
+    },
+    {
+      productName: `[네이버] ${keyword} 베스트 상품 3`,
+      price: 38900,
+      originalPrice: 45000,
+      imageUrl: "https://placehold.co/300x300/00C73C/FFFFFF?text=Naver",
+      productUrl: `https://search.shopping.naver.com/search/all?query=${encodeURIComponent(keyword)}`,
+      mallName: "naver",
+      isFreeShipping: false,
+    },
+  ];
+}
+</file>
+
+<file path="src/lib/scrapers/types.ts">
+import { MallPrice, Product } from "@/types";
+
+export interface ScraperResult {
+  product: Partial<Product>;
+  price: Omit<MallPrice, "id" | "productId" | "fetchedAt">;
+  success: boolean;
+  error?: string;
+}
+
+// 키워드 검색 결과 타입 (MVP용 간소화 버전)
+export interface SearchResultItem {
+  productName: string;
+  price: number;
+  originalPrice?: number; // 할인 전 가격
+  imageUrl: string;
+  productUrl: string;
+  mallName: "coupang" | "naver" | "elevenst";
+  isRocketDelivery?: boolean; // 쿠팡 로켓배송 여부
+  isFreeShipping?: boolean;
+  rating?: number;
+  reviewCount?: number;
+}
+
+export interface MallScraper {
+  name: string;
+  matchUrl(url: string): boolean;
+  scrape(url: string): Promise<ScraperResult>;
+  search(keyword: string): Promise<SearchResultItem[]>;
+}
+</file>
+
+</files>

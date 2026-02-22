@@ -39,8 +39,12 @@ export async function searchCoupangPython(
   try {
     const response = await fetch(`${PYTHON_SCRAPER_URL}/search/coupang`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
       body: JSON.stringify({ keyword }),
+      cache: "no-store",
       signal: AbortSignal.timeout(30000), // 30초 타임아웃
     });
 
@@ -64,8 +68,12 @@ export async function searchNaverPython(
   try {
     const response = await fetch(`${PYTHON_SCRAPER_URL}/search/naver`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
       body: JSON.stringify({ keyword }),
+      cache: "no-store",
       signal: AbortSignal.timeout(30000),
     });
 
@@ -89,8 +97,12 @@ export async function searchElevenstPython(
   try {
     const response = await fetch(`${PYTHON_SCRAPER_URL}/search/elevenst`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
       body: JSON.stringify({ keyword }),
+      cache: "no-store",
       signal: AbortSignal.timeout(30000),
     });
 

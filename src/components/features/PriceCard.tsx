@@ -13,8 +13,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
-import { ExternalLink, ShoppingBag } from "lucide-react";
-import Image from "next/image";
+import { ExternalLink } from "lucide-react";
 
 interface PriceCardProps {
   price: MallPrice;
@@ -22,14 +21,6 @@ interface PriceCardProps {
   isCheapest: boolean;
   priceDifference: number;
 }
-
-const MALL_LOGOS: Record<MallID, string> = {
-  coupang:
-    "https://upload.wikimedia.org/wikipedia/commons/f/ff/Coupang_logo.svg", // Placeholder URL
-  naver:
-    "https://upload.wikimedia.org/wikipedia/commons/b/b1/Naver_logo_initial.svg", // Placeholder URL
-  elevenst: "https://upload.wikimedia.org/wikipedia/commons/f/f5/11st_logo.svg", // Placeholder URL
-};
 
 const MALL_NAMES: Record<MallID, string> = {
   coupang: "쿠팡",
